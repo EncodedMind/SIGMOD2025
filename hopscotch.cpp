@@ -5,32 +5,49 @@
 #include <iostream>
 #include <vector>
 #include <bitset>
-#define N 10 // Size of hash table = size of keys + 1
+// #include <functional> // for std::hash
+#define N 10 // Size of hash table
 using namespace std;
 
-constexpr int H = 3; // Neighborhood length
+constexpr int H = 4; // Neighborhood size
 
 struct Entry{
-    char key;
-    int value;
+    int key;
+    vector<int> values;
     bitset<H> bitmap;
 
-    Entry(char k = '-', int v = -1) : key(k), value(v), bitmap(0){}
+    Entry(int k = -1, const vector<int>& vec = {}) : key(k), values(vec), bitmap(0){};
 };
 
-int hash_function(char key){
-    if(key == '-') return -1; // Empty spot
-    return ((int)key) % N;
+int hash_function(int key){
+    return key % N;
 }
 
-void hashtable_insert(vector<Entry>& hashtable, char key, int value){
+// int hash_function(int key){
+//     std::hash<int> hasher;
+//     return hasher(key) % N;
+// }
+
+void hashtable_insert(vector<Entry>& hashtable, int key, const vector<int>& inputvalues){
     int i = hash_function(key);
+    vector<int> values = inputvalues;
+
+    // If key already exists in the neighborhood, just append
+    for(int offset = 0; offset < H; ++offset){
+        int pos = (i + offset) % N;
+        if (hashtable[pos].key == key) {
+            for (auto v : values) hashtable[pos].values.push_back(v);
+            return;
+        }
+    }
+
     if(hashtable[i].bitmap.all()){
         cout << "REHASH NEEDED-1" << endl;
         exit(1);
     }
+
     int j = i;
-    while(hashtable[j].key != '-'){ // Find next free spot
+    while(hashtable[j].key != -1){ // Find next free spot
         j = (j+1) % N;
         if(j == i){ // Full table
             cout << "RESIZE NEEDED-2" << endl;
@@ -44,8 +61,8 @@ void hashtable_insert(vector<Entry>& hashtable, char key, int value){
 
         for(int offset = H-1; offset > 0; --offset){
             int k = (j - offset + N) % N;
-            char element = hashtable[k].key;
-            if(element == '-') continue;
+            int element = hashtable[k].key;
+            if(element == -1) continue;
 
             int hash = hash_function(element);
             if((k+N-hash) % N >= H) continue;
@@ -63,9 +80,9 @@ void hashtable_insert(vector<Entry>& hashtable, char key, int value){
 
         int hashy = hash_function(hashtable[y].key);
         hashtable[j].key = hashtable[y].key;
-        hashtable[j].value = hashtable[y].value;
-        hashtable[y].key = '-';
-        hashtable[y].value = -1;
+        hashtable[j].values = hashtable[y].values;
+        hashtable[y].key = -1;
+        hashtable[y].values.clear();
 
         hashtable[hashy].bitmap.reset(H-1-(y-hashy+N)%N);
         hashtable[hashy].bitmap.set(H-1-(j-hashy+N)%N);
@@ -73,14 +90,13 @@ void hashtable_insert(vector<Entry>& hashtable, char key, int value){
     }
 
     hashtable[j].key = key;
-    hashtable[j].value = value;
+    hashtable[j].values = values;
     hashtable[i].bitmap.set(H-1-(j+N-i)%N);        
     // cout << "Inserted key " << key << " at position " << j << endl;
 }
 
-bool hashtable_find(const vector<Entry>& hashtable, char key){
+bool hashtable_find(const vector<Entry>& hashtable, int key){
     int i = hash_function(key);
-    if(i == -1) return false; // Empty spot
 
     for(int offset = 0; offset < H; ++offset){
         if(hashtable[i].bitmap.test(H-1-offset)){
@@ -93,8 +109,10 @@ bool hashtable_find(const vector<Entry>& hashtable, char key){
 
 void hashtable_print(const vector<Entry>& hashtable){
     cout << "Final table: ";
-    for(auto [key, value, bitmap] : hashtable){
-        cout << "{" << key << ", " << value << "} ";
+    for(auto [key, values, bitmap] : hashtable){
+        cout << "{" << key << ": [";
+        for(auto v : values) cout << v << " ";
+        cout << "]} ";
     }
     cout << endl;
 
@@ -106,32 +124,25 @@ void hashtable_print(const vector<Entry>& hashtable){
 
 int main(){
     vector<Entry> hashtable(N);
-    vector<pair<char, int>> data = { {'a', 10}, {'b', 20}, {'l', 30}, {'d', 40}, {'e', 50}, {'k', 60} };
+    vector<pair<int, int>> data = {
+    {10, 100},   // Hashes to 0
+    {20, 200},   // Hashes to 0, forces first displacement
+    {7, 700},    // Hashes to 7
+    {17, 170},   // Hashes to 7, forces displacement within H
+    {10, 101},   // Tests duplicate key handling
+    {27, 270},   // Hashes to 7, but still within H=4
+    {40, 400},   // Hashes to 0, tests neighborhood limits
+    {8, 800}     // Should cause neighborhood restructuring
+};
 
     for(auto [key, value] : data){
-        hashtable_insert(hashtable, key, value);
+        hashtable_insert(hashtable, key, {value});
     }
 
     hashtable_print(hashtable);
 
-    cout << (hashtable_find(hashtable, 'k') ? "Found k" : "k not found") << endl;
-    cout << (hashtable_find(hashtable, 'c') ? "Found c" : "c not found") << endl;
+    cout << (hashtable_find(hashtable, 17) ? "Found 17" : "17 not found") << endl;
+    cout << (hashtable_find(hashtable, 100) ? "Found 100" : "100 not found") << endl;
 
     return 0;
 }
-
-// Example:
-// Input: a, b, l, d, e, k
-// d hashes to 0, e hashes to 1, a and k hash to 7, b and l hash to 8
-// Final table: b, e, d, -, -, -, -, a, k, l
-// Neighborhood bitsets:
-// Bucket 0: 001
-// Bucket 1: 100
-// Bucket 2: 000
-// Bucket 3: 000
-// Bucket 4: 000
-// Bucket 5: 000
-// Bucket 6: 000
-// Bucket 7: 110
-// Bucket 8: 011
-// Bucket 9: 000

@@ -3,7 +3,7 @@
 // Robin Hood Hashing
 #include <iostream>
 #include <vector>
-#include <functional> // for std::hash
+// #include <functional> // for std::hash
 #define N 10 // Size of hash table
 using namespace std;
 
@@ -16,7 +16,6 @@ struct Entry{
 };
 
 int hash_function(int key){
-    if(key == -1) return -1; // Empty spot
     return key % N;
 }
 
@@ -86,7 +85,7 @@ int main(){
         {20, 200},   // Hashes to 0, forces collision
         {30, 300},   // Hashes to 0, forces second collision
         {9, 900},    // Hashes to 9, will wrap around
-        {19, 901},   // Hashes to 9, forces wrap-around collision
+        {19, 190},   // Hashes to 9, forces wrap-around collision
         {10, 101},   // Duplicate key with new value
         {20, 201},   // Another duplicate key
         {40, 400},   // Hashes to 0, creates maximum PSL
@@ -94,13 +93,12 @@ int main(){
     };
 
     for(auto [key, value] : data){
-        vector<int> values = {value};
-        hashtable_insert(hashtable, key, values);
+        hashtable_insert(hashtable, key, {value});
     }
 
     hashtable_print(hashtable);
 
-    cout << (hashtable_find(hashtable, 21) ? "Found 21" : "21 not found") << endl;
+    cout << (hashtable_find(hashtable, 9) ? "Found 9" : "9 not found") << endl;
     cout << (hashtable_find(hashtable, 100) ? "Found 100" : "100 not found") << endl;
 
     return 0;

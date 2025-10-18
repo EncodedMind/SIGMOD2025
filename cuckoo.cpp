@@ -9,27 +9,34 @@
 // Cuckoo Hashing
 #include <iostream>
 #include <vector>
-#define N 11 // Size of hash tables = size of keys + 1
+// #include <functional> // for std::hash
+#define N 10 // Size of hash tables
 using namespace std;
 
 struct Entry{
     int key;
-    int value;
+    vector<int> values;
 
-    Entry(int k = -1, int v = -1) : key(k), value(v){}
+    Entry(int k = -1, const vector<int>& vec = {}) : key(k), values(vec){}
 };
 
 int hash_function1(int key){
     return key % N;
 }
 
+// int hash_function2(int key){
+//     std::hash<int> hasher;
+//     return hasher(key) % N;
+// }
+
 int hash_function2(int key){
     return (key / N) % N;
 }
 
-void hashtable_insert(vector<Entry>& hashtable1, vector<Entry>& hashtable2, int key, int value){
-    Entry current(key, value);
+void hashtable_insert(vector<Entry>& hashtable1, vector<Entry>& hashtable2, int key, const vector<int>& inputvalues){
     bool table1 = true; // true for T1, false for T2
+    vector<int> values = inputvalues;
+    Entry current(key, values);
 
     while(1){
         if(table1){
@@ -39,6 +46,10 @@ void hashtable_insert(vector<Entry>& hashtable1, vector<Entry>& hashtable2, int 
                 break;
             }
             else{
+                if(hashtable1[hash1].key == current.key){ // key already exists, just add the value
+                    for(auto& v : current.values) hashtable1[hash1].values.push_back(v);
+                    break;
+                }
                 swap(hashtable1[hash1], current); // place new key in T1
                 table1 = false;
             }
@@ -50,6 +61,10 @@ void hashtable_insert(vector<Entry>& hashtable1, vector<Entry>& hashtable2, int 
                 break;
             }
             else{
+                if(hashtable2[hash2].key == current.key){ // key already exists, just add the value
+                    for(auto& v : current.values) hashtable2[hash2].values.push_back(v);
+                    break;
+                }
                 swap(hashtable2[hash2], current); // place new key in T2
                 table1 = true;
             }
@@ -62,9 +77,10 @@ bool hashtable_find(const vector<Entry>& hashtable1, const vector<Entry>& hashta
 }
 
 void hashtable_print(const vector<Entry>& hashtable){
-    for(auto [key, value] : hashtable){
-        if(key == -1) cout << "- ";
-        else cout << "{" << key << ", " << value << "} ";
+    for(auto [key, values] : hashtable){
+        cout << "{" << key << ": [";
+        for(auto v : values) cout << v << " ";
+        cout << "]} ";
     }
     cout << endl;
 }
@@ -73,10 +89,19 @@ int main(){
 
     vector<Entry> T1(N);
     vector<Entry> T2(N);
-    vector<pair<int, int>> data = { {20, 200}, {50, 500}, {53, 530}, {75, 750}, {100, 1000}, {67, 670}, {105, 1050}, {3, 300}, {36, 360}, {39, 390} };
+    vector<pair<int, int>> data = {
+        {10, 100},    // hash1=0, hash2=1
+        {20, 200},    // hash1=0, hash2=2 - forces first kickout from T1
+        {30, 300},    // hash1=0, hash2=3 - forces multiple kickouts
+        {110, 110},   // hash1=0, hash2=11%10=1 - creates chain
+        {10, 101},    // Tests duplicate key handling
+        {55, 550},    // hash1=5, hash2=5 - same position in both tables
+        {95, 950},    // hash1=5, hash2=9 - forces long chain of moves
+        {75, 750}     // hash1=5, hash2=7 - tests multiple displacements
+    };
 
     for(auto [key, value] : data){
-        hashtable_insert(T1, T2, key, value);
+        hashtable_insert(T1, T2, key, {value});
     }
 
     cout << "Table 1: ";
@@ -85,17 +110,8 @@ int main(){
     cout << "Table 2: ";
     hashtable_print(T2);
 
+    cout << (hashtable_find(T1, T2, 30) ? "Found 30" : "30 not found") << endl;
     cout << (hashtable_find(T1, T2, 100) ? "Found 100" : "100 not found") << endl;
-    cout << (hashtable_find(T1, T2, 25) ? "Found 25" : "25 not found") << endl;
 
     return 0;
 }
-
-
-// Example:
-// Input keys: {20, 50, 53, 75, 100, 67, 105, 3, 36, 39}
-// T1: - 100 - 36 - - 50 - - 75 -
-// T2: 3 20 - 39 53 - 67 - - 105 -
-// Hash functions:
-// h1(x) = x % 11
-// h2(x) = (x / 11) % 11
