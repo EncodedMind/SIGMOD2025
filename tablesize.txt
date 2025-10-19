@@ -1,0 +1,1842 @@
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 250
+Final hashtable size (unique): 250
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 142
+Final hashtable size (unique): 105
+Query 1a >> 		 Runtime: 760 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 10
+Final hashtable size (unique): 10
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 1b >> 		 Runtime: 510 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 17811
+Final hashtable size (unique): 9342
+Size of hashtable: 23
+Final hashtable size (unique): 8
+Query 1c >> 		 Runtime: 157 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 10
+Final hashtable size (unique): 10
+Size of hashtable: 6
+Final hashtable size (unique): 6
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 1d >> 		 Runtime: 407 ms - Result correct: true
+Size of hashtable: 9775
+Final hashtable size (unique): 9775
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 7834
+Final hashtable size (unique): 4377
+Query 2a >> 		 Runtime: 1067 ms - Result correct: true
+Size of hashtable: 2340
+Final hashtable size (unique): 2340
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 5228
+Final hashtable size (unique): 2584
+Query 2b >> 		 Runtime: 948 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 0
+Final hashtable size (unique): 0
+Query 2c >> 		 Runtime: 993 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 148552
+Final hashtable size (unique): 28056
+Query 2d >> 		 Runtime: 1181 ms - Result correct: true
+Size of hashtable: 30
+Final hashtable size (unique): 30
+Size of hashtable: 12951
+Final hashtable size (unique): 10763
+Size of hashtable: 1766
+Final hashtable size (unique): 973
+Query 3a >> 		 Runtime: 404 ms - Result correct: true
+Size of hashtable: 30
+Final hashtable size (unique): 30
+Size of hashtable: 12951
+Final hashtable size (unique): 10763
+Size of hashtable: 21
+Final hashtable size (unique): 14
+Query 3b >> 		 Runtime: 331 ms - Result correct: true
+Size of hashtable: 30
+Final hashtable size (unique): 30
+Size of hashtable: 12951
+Final hashtable size (unique): 10763
+Size of hashtable: 12163
+Final hashtable size (unique): 7688
+Query 3c >> 		 Runtime: 497 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 30
+Final hashtable size (unique): 30
+Size of hashtable: 12951
+Final hashtable size (unique): 10763
+Size of hashtable: 5820
+Final hashtable size (unique): 5082
+Query 4a >> 		 Runtime: 474 ms - Result correct: true
+Size of hashtable: 30
+Final hashtable size (unique): 30
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 305
+Final hashtable size (unique): 305
+Size of hashtable: 21
+Final hashtable size (unique): 19
+Query 4b >> 		 Runtime: 341 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 30
+Final hashtable size (unique): 30
+Size of hashtable: 12951
+Final hashtable size (unique): 10763
+Size of hashtable: 8092
+Final hashtable size (unique): 6837
+Query 4c >> 		 Runtime: 645 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 0
+Final hashtable size (unique): 0
+Size of hashtable: 0
+Final hashtable size (unique): 0
+Size of hashtable: 113
+Final hashtable size (unique): 113
+Query 5a >> 		 Runtime: 127 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 0
+Final hashtable size (unique): 0
+Size of hashtable: 0
+Final hashtable size (unique): 0
+Size of hashtable: 113
+Final hashtable size (unique): 113
+Query 5b >> 		 Runtime: 84 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 798
+Final hashtable size (unique): 783
+Size of hashtable: 767
+Final hashtable size (unique): 752
+Size of hashtable: 113
+Final hashtable size (unique): 113
+Query 5c >> 		 Runtime: 248 ms - Result correct: true
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 14
+Final hashtable size (unique): 14
+Size of hashtable: 6
+Final hashtable size (unique): 4
+Query 6a >> 		 Runtime: 5299 ms - Result correct: true
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 8
+Final hashtable size (unique): 8
+Size of hashtable: 35548
+Final hashtable size (unique): 29863
+Size of hashtable: 112
+Final hashtable size (unique): 53
+Query 6b >> 		 Runtime: 2662 ms - Result correct: true
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 14
+Final hashtable size (unique): 14
+Size of hashtable: 6
+Final hashtable size (unique): 4
+Query 6c >> 		 Runtime: 2310 ms - Result correct: true
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 8
+Final hashtable size (unique): 8
+Size of hashtable: 35548
+Final hashtable size (unique): 29863
+Size of hashtable: 112
+Final hashtable size (unique): 53
+Query 6d >> 		 Runtime: 2551 ms - Result correct: true
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 14
+Final hashtable size (unique): 14
+Size of hashtable: 6
+Final hashtable size (unique): 4
+Query 6e >> 		 Runtime: 2393 ms - Result correct: true
+Size of hashtable: 8
+Final hashtable size (unique): 8
+Size of hashtable: 35548
+Final hashtable size (unique): 29863
+Size of hashtable: 14165
+Final hashtable size (unique): 11843
+Size of hashtable: 785477
+Final hashtable size (unique): 285237
+Query 6f >> 		 Runtime: 4380 ms - Result correct: true
+Size of hashtable: 340186
+Final hashtable size (unique): 340186
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 64
+Final hashtable size (unique): 64
+Size of hashtable: 17
+Final hashtable size (unique): 17
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 5186
+Final hashtable size (unique): 3456
+Size of hashtable: 14
+Final hashtable size (unique): 3
+Query 7a >> 		 Runtime: 6085 ms - Result correct: true
+Size of hashtable: 91976
+Final hashtable size (unique): 91976
+Size of hashtable: 76065
+Final hashtable size (unique): 76065
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 64
+Final hashtable size (unique): 64
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 5186
+Final hashtable size (unique): 3456
+Size of hashtable: 8
+Final hashtable size (unique): 1
+Query 7b >> 		 Runtime: 2615 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 84183
+Final hashtable size (unique): 82301
+Size of hashtable: 13063
+Final hashtable size (unique): 12733
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 21505
+Final hashtable size (unique): 12046
+Size of hashtable: 63648
+Final hashtable size (unique): 7029
+Size of hashtable: 40157
+Final hashtable size (unique): 3819
+Query 7c >> 		 Runtime: 6223 ms - Result correct: true
+Size of hashtable: 20911
+Final hashtable size (unique): 20911
+Size of hashtable: 6752
+Final hashtable size (unique): 6752
+Size of hashtable: 48328
+Final hashtable size (unique): 36045
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 7438
+Final hashtable size (unique): 1268
+Size of hashtable: 62
+Final hashtable size (unique): 23
+Query 8a >> 		 Runtime: 386 ms - Result correct: true
+Size of hashtable: 20911
+Final hashtable size (unique): 20911
+Size of hashtable: 7
+Final hashtable size (unique): 7
+Size of hashtable: 226
+Final hashtable size (unique): 87
+Size of hashtable: 9
+Final hashtable size (unique): 4
+Size of hashtable: 6
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 8b >> 		 Runtime: 104 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 84843
+Final hashtable size (unique): 84843
+Size of hashtable: 1153798
+Final hashtable size (unique): 571710
+Size of hashtable: 1153798
+Final hashtable size (unique): 571710
+Size of hashtable: 901343
+Final hashtable size (unique): 588222
+Size of hashtable: 901343
+Final hashtable size (unique): 588222
+Query 8c >> 		 Runtime: 8828 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 84843
+Final hashtable size (unique): 84843
+Size of hashtable: 1153798
+Final hashtable size (unique): 571710
+Size of hashtable: 1153798
+Final hashtable size (unique): 571710
+Size of hashtable: 901343
+Final hashtable size (unique): 588222
+Size of hashtable: 901343
+Final hashtable size (unique): 588222
+Query 8d >> 		 Runtime: 5242 ms - Result correct: true
+Size of hashtable: 6768
+Final hashtable size (unique): 6768
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 727
+Final hashtable size (unique): 693
+Size of hashtable: 351
+Final hashtable size (unique): 178
+Size of hashtable: 135
+Final hashtable size (unique): 82
+Size of hashtable: 125
+Final hashtable size (unique): 55
+Size of hashtable: 115
+Final hashtable size (unique): 39
+Query 9a >> 		 Runtime: 736 ms - Result correct: true
+Size of hashtable: 5409
+Final hashtable size (unique): 5409
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 453
+Final hashtable size (unique): 429
+Size of hashtable: 87
+Final hashtable size (unique): 57
+Size of hashtable: 31
+Final hashtable size (unique): 23
+Size of hashtable: 30
+Final hashtable size (unique): 17
+Size of hashtable: 30
+Final hashtable size (unique): 13
+Query 9b >> 		 Runtime: 575 ms - Result correct: true
+Size of hashtable: 50011
+Final hashtable size (unique): 50011
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 3140339
+Final hashtable size (unique): 3140339
+Size of hashtable: 5686
+Final hashtable size (unique): 4658
+Size of hashtable: 84843
+Final hashtable size (unique): 84843
+Size of hashtable: 4503
+Final hashtable size (unique): 1410
+Size of hashtable: 4503
+Final hashtable size (unique): 585
+Query 9c >> 		 Runtime: 1237 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 961555
+Final hashtable size (unique): 961555
+Size of hashtable: 3140339
+Final hashtable size (unique): 3140339
+Size of hashtable: 255493
+Final hashtable size (unique): 76024
+Size of hashtable: 84843
+Final hashtable size (unique): 84843
+Size of hashtable: 173567
+Final hashtable size (unique): 21613
+Size of hashtable: 173567
+Final hashtable size (unique): 14423
+Query 9d >> 		 Runtime: 1904 ms - Result correct: true
+Size of hashtable: 1361
+Final hashtable size (unique): 1361
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 25874
+Final hashtable size (unique): 16553
+Size of hashtable: 275
+Final hashtable size (unique): 137
+Size of hashtable: 112
+Final hashtable size (unique): 62
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Query 10a >> 		 Runtime: 685 ms - Result correct: true
+Size of hashtable: 1361
+Final hashtable size (unique): 1361
+Size of hashtable: 8790
+Final hashtable size (unique): 6045
+Size of hashtable: 1259
+Final hashtable size (unique): 817
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 3140339
+Final hashtable size (unique): 3140339
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Query 10b >> 		 Runtime: 1114 ms - Result correct: true
+Size of hashtable: 3140339
+Final hashtable size (unique): 3140339
+Size of hashtable: 84843
+Final hashtable size (unique): 84843
+Size of hashtable: 1153798
+Final hashtable size (unique): 571710
+Size of hashtable: 596250
+Final hashtable size (unique): 316074
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 12
+Final hashtable size (unique): 12
+Query 10c >> 		 Runtime: 1681 ms - Result correct: true
+Size of hashtable: 48302
+Final hashtable size (unique): 48302
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 10544
+Final hashtable size (unique): 10538
+Size of hashtable: 5541
+Final hashtable size (unique): 5537
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 2315
+Final hashtable size (unique): 570
+Query 11a >> 		 Runtime: 491 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 36
+Final hashtable size (unique): 36
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1158
+Final hashtable size (unique): 362
+Size of hashtable: 21
+Final hashtable size (unique): 1
+Size of hashtable: 21
+Final hashtable size (unique): 3
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 11b >> 		 Runtime: 337 ms - Result correct: true
+Size of hashtable: 89
+Final hashtable size (unique): 89
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 47403
+Final hashtable size (unique): 45565
+Size of hashtable: 4921
+Final hashtable size (unique): 1264
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 29997
+Final hashtable size (unique): 6411
+Size of hashtable: 18
+Final hashtable size (unique): 18
+Query 11c >> 		 Runtime: 823 ms - Result correct: true
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 47403
+Final hashtable size (unique): 45565
+Size of hashtable: 29997
+Final hashtable size (unique): 6411
+Size of hashtable: 18
+Final hashtable size (unique): 18
+Size of hashtable: 1460
+Final hashtable size (unique): 181
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 14916
+Final hashtable size (unique): 222
+Query 11d >> 		 Runtime: 739 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 15849
+Final hashtable size (unique): 15849
+Size of hashtable: 1943
+Final hashtable size (unique): 1889
+Size of hashtable: 557
+Final hashtable size (unique): 544
+Size of hashtable: 1934
+Final hashtable size (unique): 1132
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 12a >> 		 Runtime: 282 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2536
+Final hashtable size (unique): 2536
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 3968
+Final hashtable size (unique): 1470
+Size of hashtable: 33
+Final hashtable size (unique): 2
+Size of hashtable: 33
+Final hashtable size (unique): 22
+Query 12b >> 		 Runtime: 6017 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 121572
+Final hashtable size (unique): 121572
+Size of hashtable: 22187
+Final hashtable size (unique): 20844
+Size of hashtable: 7964
+Final hashtable size (unique): 7565
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 15537
+Final hashtable size (unique): 8449
+Query 12c >> 		 Runtime: 437 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 9775
+Final hashtable size (unique): 9775
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 459925
+Final hashtable size (unique): 459925
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 31510
+Final hashtable size (unique): 20289
+Size of hashtable: 134189
+Final hashtable size (unique): 18932
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 13a >> 		 Runtime: 3062 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2218
+Final hashtable size (unique): 2218
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 357
+Final hashtable size (unique): 282
+Size of hashtable: 117
+Final hashtable size (unique): 68
+Size of hashtable: 626
+Final hashtable size (unique): 97
+Query 13b >> 		 Runtime: 1370 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 294
+Final hashtable size (unique): 294
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 81
+Final hashtable size (unique): 59
+Size of hashtable: 32
+Final hashtable size (unique): 19
+Size of hashtable: 162
+Final hashtable size (unique): 32
+Query 13c >> 		 Runtime: 1282 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 459925
+Final hashtable size (unique): 459925
+Size of hashtable: 1118984
+Final hashtable size (unique): 402645
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 724731
+Final hashtable size (unique): 174349
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1919495
+Final hashtable size (unique): 85597
+Query 13d >> 		 Runtime: 3894 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 37091
+Final hashtable size (unique): 27731
+Size of hashtable: 23916
+Final hashtable size (unique): 17025
+Size of hashtable: 20967
+Final hashtable size (unique): 14568
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 14a >> 		 Runtime: 543 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 455
+Final hashtable size (unique): 455
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 123
+Final hashtable size (unique): 122
+Size of hashtable: 8
+Final hashtable size (unique): 8
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 14b >> 		 Runtime: 349 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 37091
+Final hashtable size (unique): 27731
+Size of hashtable: 23916
+Final hashtable size (unique): 17025
+Size of hashtable: 20967
+Final hashtable size (unique): 14568
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Query 14c >> 		 Runtime: 575 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1771
+Final hashtable size (unique): 1755
+Size of hashtable: 699
+Final hashtable size (unique): 274
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 668
+Final hashtable size (unique): 565
+Size of hashtable: 659
+Final hashtable size (unique): 559
+Size of hashtable: 1398
+Final hashtable size (unique): 816
+Size of hashtable: 1398
+Final hashtable size (unique): 166
+Query 15a >> 		 Runtime: 436 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1771
+Final hashtable size (unique): 1755
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 75
+Final hashtable size (unique): 74
+Size of hashtable: 74
+Final hashtable size (unique): 73
+Size of hashtable: 151
+Final hashtable size (unique): 105
+Size of hashtable: 151
+Final hashtable size (unique): 28
+Query 15b >> 		 Runtime: 362 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1783
+Final hashtable size (unique): 1767
+Size of hashtable: 1782
+Final hashtable size (unique): 1766
+Size of hashtable: 2884
+Final hashtable size (unique): 1390
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 2647
+Final hashtable size (unique): 1376
+Size of hashtable: 7964
+Final hashtable size (unique): 2222
+Size of hashtable: 7964
+Final hashtable size (unique): 484
+Query 15c >> 		 Runtime: 689 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 10679
+Final hashtable size (unique): 10581
+Size of hashtable: 591
+Final hashtable size (unique): 413
+Size of hashtable: 584
+Final hashtable size (unique): 409
+Size of hashtable: 2099
+Final hashtable size (unique): 836
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 875
+Final hashtable size (unique): 233
+Size of hashtable: 134170
+Final hashtable size (unique): 134170
+Query 15d >> 		 Runtime: 816 ms - Result correct: true
+Size of hashtable: 68245
+Final hashtable size (unique): 68245
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 1173
+Final hashtable size (unique): 594
+Size of hashtable: 1173
+Final hashtable size (unique): 146
+Size of hashtable: 1089
+Final hashtable size (unique): 28
+Size of hashtable: 323
+Final hashtable size (unique): 173
+Query 16a >> 		 Runtime: 4115 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 148552
+Final hashtable size (unique): 28056
+Size of hashtable: 68316
+Final hashtable size (unique): 24646
+Size of hashtable: 2832555
+Final hashtable size (unique): 322169
+Size of hashtable: 3710592
+Final hashtable size (unique): 118594
+Query 16b >> 		 Runtime: 6564 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 6926
+Final hashtable size (unique): 6921
+Size of hashtable: 11406
+Final hashtable size (unique): 1140
+Size of hashtable: 8538
+Final hashtable size (unique): 3862
+Size of hashtable: 221609
+Final hashtable size (unique): 29635
+Size of hashtable: 319932
+Final hashtable size (unique): 16216
+Query 16c >> 		 Runtime: 3655 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 5385
+Final hashtable size (unique): 5382
+Size of hashtable: 8661
+Final hashtable size (unique): 876
+Size of hashtable: 6766
+Final hashtable size (unique): 3080
+Size of hashtable: 169273
+Final hashtable size (unique): 23170
+Size of hashtable: 249455
+Final hashtable size (unique): 13249
+Query 16d >> 		 Runtime: 3459 ms - Result correct: true
+Size of hashtable: 343399
+Final hashtable size (unique): 343399
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 148552
+Final hashtable size (unique): 28056
+Size of hashtable: 68316
+Final hashtable size (unique): 24646
+Query 17a >> 		 Runtime: 4424 ms - Result correct: true
+Size of hashtable: 36174
+Final hashtable size (unique): 36174
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 6642
+Final hashtable size (unique): 4815
+Size of hashtable: 52306
+Final hashtable size (unique): 9612
+Size of hashtable: 52306
+Final hashtable size (unique): 4495
+Query 17b >> 		 Runtime: 3456 ms - Result correct: true
+Size of hashtable: 2664
+Final hashtable size (unique): 2664
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 250
+Final hashtable size (unique): 195
+Size of hashtable: 1918
+Final hashtable size (unique): 963
+Size of hashtable: 1918
+Final hashtable size (unique): 184
+Query 17c >> 		 Runtime: 2850 ms - Result correct: true
+Size of hashtable: 5216
+Final hashtable size (unique): 5216
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 1972
+Final hashtable size (unique): 1736
+Size of hashtable: 11538
+Final hashtable size (unique): 3792
+Size of hashtable: 11538
+Final hashtable size (unique): 1641
+Query 17d >> 		 Runtime: 2540 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 148552
+Final hashtable size (unique): 28056
+Size of hashtable: 68316
+Final hashtable size (unique): 24646
+Size of hashtable: 2832555
+Final hashtable size (unique): 322169
+Query 17e >> 		 Runtime: 4228 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 41840
+Final hashtable size (unique): 41819
+Size of hashtable: 1038393
+Final hashtable size (unique): 446684
+Size of hashtable: 149494
+Final hashtable size (unique): 30395
+Size of hashtable: 1113120
+Final hashtable size (unique): 25024
+Query 17f >> 		 Runtime: 3984 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 9062
+Final hashtable size (unique): 9062
+Size of hashtable: 6719
+Final hashtable size (unique): 6589
+Size of hashtable: 3435
+Final hashtable size (unique): 3385
+Size of hashtable: 410
+Final hashtable size (unique): 394
+Query 18a >> 		 Runtime: 3420 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 15849
+Final hashtable size (unique): 15849
+Size of hashtable: 732
+Final hashtable size (unique): 652
+Size of hashtable: 412
+Final hashtable size (unique): 321
+Size of hashtable: 16
+Final hashtable size (unique): 12
+Query 18b >> 		 Runtime: 1281 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 459925
+Final hashtable size (unique): 459925
+Size of hashtable: 102516
+Final hashtable size (unique): 75493
+Size of hashtable: 54155
+Final hashtable size (unique): 25170
+Size of hashtable: 28073
+Final hashtable size (unique): 15556
+Query 18c >> 		 Runtime: 751 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 6768
+Final hashtable size (unique): 6768
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 727
+Final hashtable size (unique): 693
+Size of hashtable: 220
+Final hashtable size (unique): 71
+Size of hashtable: 201
+Final hashtable size (unique): 48
+Size of hashtable: 205
+Final hashtable size (unique): 51
+Size of hashtable: 321
+Final hashtable size (unique): 43
+Size of hashtable: 311
+Final hashtable size (unique): 32
+Query 19a >> 		 Runtime: 481 ms - Result correct: true
+Size of hashtable: 5409
+Final hashtable size (unique): 5409
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 7
+Final hashtable size (unique): 7
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 17
+Final hashtable size (unique): 3
+Size of hashtable: 17
+Final hashtable size (unique): 16
+Size of hashtable: 5
+Final hashtable size (unique): 1
+Size of hashtable: 5
+Final hashtable size (unique): 1
+Size of hashtable: 15
+Final hashtable size (unique): 2
+Query 19b >> 		 Runtime: 263 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 50011
+Final hashtable size (unique): 50011
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 6552
+Final hashtable size (unique): 5439
+Size of hashtable: 2521
+Final hashtable size (unique): 1589
+Size of hashtable: 2265
+Final hashtable size (unique): 608
+Size of hashtable: 2129
+Final hashtable size (unique): 1355
+Size of hashtable: 8585
+Final hashtable size (unique): 1348
+Size of hashtable: 2632
+Final hashtable size (unique): 232
+Query 19c >> 		 Runtime: 600 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 276166
+Final hashtable size (unique): 82475
+Size of hashtable: 3140339
+Final hashtable size (unique): 3140339
+Size of hashtable: 498436
+Final hashtable size (unique): 70752
+Size of hashtable: 342144
+Final hashtable size (unique): 16818
+Size of hashtable: 341836
+Final hashtable size (unique): 42260
+Size of hashtable: 84843
+Final hashtable size (unique): 84843
+Size of hashtable: 787043
+Final hashtable size (unique): 9322
+Query 19d >> 		 Runtime: 3325 ms - Result correct: true
+Size of hashtable: 30
+Final hashtable size (unique): 30
+Size of hashtable: 8
+Final hashtable size (unique): 8
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 85941
+Final hashtable size (unique): 85941
+Size of hashtable: 8765
+Final hashtable size (unique): 6947
+Size of hashtable: 33
+Final hashtable size (unique): 5
+Size of hashtable: 33
+Final hashtable size (unique): 4
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 20a >> 		 Runtime: 3829 ms - Result correct: true
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 8
+Final hashtable size (unique): 8
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 85941
+Final hashtable size (unique): 85941
+Size of hashtable: 8765
+Final hashtable size (unique): 6947
+Size of hashtable: 40
+Final hashtable size (unique): 16
+Size of hashtable: 17
+Final hashtable size (unique): 3
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 20b >> 		 Runtime: 2733 ms - Result correct: true
+Size of hashtable: 180152
+Final hashtable size (unique): 180152
+Size of hashtable: 10
+Final hashtable size (unique): 10
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 85941
+Final hashtable size (unique): 85941
+Size of hashtable: 6396
+Final hashtable size (unique): 5302
+Size of hashtable: 20718
+Final hashtable size (unique): 12782
+Size of hashtable: 20718
+Final hashtable size (unique): 3808
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 20c >> 		 Runtime: 3704 ms - Result correct: true
+Size of hashtable: 48302
+Final hashtable size (unique): 48302
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 10544
+Final hashtable size (unique): 10538
+Size of hashtable: 1520
+Final hashtable size (unique): 962
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 2315
+Final hashtable size (unique): 570
+Size of hashtable: 1816
+Final hashtable size (unique): 10
+Query 21a >> 		 Runtime: 479 ms - Result correct: true
+Size of hashtable: 48302
+Final hashtable size (unique): 48302
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 10544
+Final hashtable size (unique): 10538
+Size of hashtable: 904
+Final hashtable size (unique): 624
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 2315
+Final hashtable size (unique): 570
+Size of hashtable: 308
+Final hashtable size (unique): 8
+Query 21b >> 		 Runtime: 484 ms - Result correct: true
+Size of hashtable: 48302
+Final hashtable size (unique): 48302
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 10544
+Final hashtable size (unique): 10538
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2293
+Final hashtable size (unique): 1911
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 2315
+Final hashtable size (unique): 570
+Size of hashtable: 402
+Final hashtable size (unique): 12
+Query 21c >> 		 Runtime: 1200 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 37091
+Final hashtable size (unique): 27731
+Size of hashtable: 24800
+Final hashtable size (unique): 18183
+Size of hashtable: 16083
+Final hashtable size (unique): 11379
+Size of hashtable: 44215
+Final hashtable size (unique): 2613
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 40185
+Final hashtable size (unique): 3730
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Query 22a >> 		 Runtime: 1669 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 37091
+Final hashtable size (unique): 27731
+Size of hashtable: 24800
+Final hashtable size (unique): 18183
+Size of hashtable: 16083
+Final hashtable size (unique): 11379
+Size of hashtable: 44215
+Final hashtable size (unique): 2613
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 40185
+Final hashtable size (unique): 3730
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Query 22b >> 		 Runtime: 898 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 37091
+Final hashtable size (unique): 27731
+Size of hashtable: 23916
+Final hashtable size (unique): 17025
+Size of hashtable: 20967
+Final hashtable size (unique): 14568
+Size of hashtable: 70848
+Final hashtable size (unique): 3250
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 65749
+Final hashtable size (unique): 5353
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Query 22c >> 		 Runtime: 646 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 37091
+Final hashtable size (unique): 27731
+Size of hashtable: 23916
+Final hashtable size (unique): 17025
+Size of hashtable: 20967
+Final hashtable size (unique): 14568
+Size of hashtable: 5131
+Final hashtable size (unique): 3214
+Size of hashtable: 71768
+Final hashtable size (unique): 7453
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Query 22d >> 		 Runtime: 793 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 24592
+Final hashtable size (unique): 19311
+Size of hashtable: 6
+Final hashtable size (unique): 3
+Size of hashtable: 5
+Final hashtable size (unique): 2
+Size of hashtable: 6
+Final hashtable size (unique): 3
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 6
+Final hashtable size (unique): 2
+Size of hashtable: 618
+Final hashtable size (unique): 156
+Query 23a >> 		 Runtime: 546 ms - Result correct: true
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1771
+Final hashtable size (unique): 1755
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 24592
+Final hashtable size (unique): 19311
+Size of hashtable: 16
+Final hashtable size (unique): 1
+Size of hashtable: 16
+Final hashtable size (unique): 1
+Size of hashtable: 16
+Final hashtable size (unique): 1
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 23b >> 		 Runtime: 576 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 24592
+Final hashtable size (unique): 19311
+Size of hashtable: 6
+Final hashtable size (unique): 3
+Size of hashtable: 6
+Final hashtable size (unique): 3
+Size of hashtable: 7
+Final hashtable size (unique): 4
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 7
+Final hashtable size (unique): 3
+Size of hashtable: 628
+Final hashtable size (unique): 164
+Query 23c >> 		 Runtime: 619 ms - Result correct: true
+Size of hashtable: 50011
+Final hashtable size (unique): 50011
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 9696
+Final hashtable size (unique): 6159
+Size of hashtable: 495
+Final hashtable size (unique): 357
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 738
+Final hashtable size (unique): 268
+Size of hashtable: 13560
+Final hashtable size (unique): 1180
+Size of hashtable: 3406
+Final hashtable size (unique): 236
+Size of hashtable: 13758
+Final hashtable size (unique): 898
+Size of hashtable: 277
+Final hashtable size (unique): 4
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 24a >> 		 Runtime: 916 ms - Result correct: true
+Size of hashtable: 50011
+Final hashtable size (unique): 50011
+Size of hashtable: 8
+Final hashtable size (unique): 8
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 7
+Final hashtable size (unique): 5
+Size of hashtable: 117
+Final hashtable size (unique): 48
+Size of hashtable: 25
+Final hashtable size (unique): 3
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 275
+Final hashtable size (unique): 1
+Size of hashtable: 275
+Final hashtable size (unique): 3
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 24b >> 		 Runtime: 792 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 5
+Final hashtable size (unique): 5
+Size of hashtable: 62096
+Final hashtable size (unique): 46017
+Size of hashtable: 12438
+Final hashtable size (unique): 6532
+Size of hashtable: 11389
+Final hashtable size (unique): 5815
+Size of hashtable: 7112
+Final hashtable size (unique): 2852
+Size of hashtable: 4407
+Final hashtable size (unique): 1679
+Query 25a >> 		 Runtime: 1155 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 5
+Final hashtable size (unique): 5
+Size of hashtable: 73
+Final hashtable size (unique): 73
+Size of hashtable: 24
+Final hashtable size (unique): 16
+Size of hashtable: 6
+Final hashtable size (unique): 3
+Size of hashtable: 6
+Final hashtable size (unique): 3
+Size of hashtable: 6
+Final hashtable size (unique): 2
+Query 25b >> 		 Runtime: 629 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 7
+Final hashtable size (unique): 7
+Size of hashtable: 76714
+Final hashtable size (unique): 51721
+Size of hashtable: 68040
+Final hashtable size (unique): 22992
+Size of hashtable: 63386
+Final hashtable size (unique): 20537
+Size of hashtable: 42900
+Final hashtable size (unique): 8997
+Size of hashtable: 26153
+Final hashtable size (unique): 5560
+Query 25c >> 		 Runtime: 1066 ms - Result correct: true
+Size of hashtable: 180152
+Final hashtable size (unique): 180152
+Size of hashtable: 192839
+Final hashtable size (unique): 174250
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 25644
+Final hashtable size (unique): 8866
+Size of hashtable: 6694
+Final hashtable size (unique): 4694
+Size of hashtable: 6694
+Final hashtable size (unique): 2976
+Size of hashtable: 10
+Final hashtable size (unique): 10
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 26a >> 		 Runtime: 12269 ms - Result correct: true
+Size of hashtable: 180152
+Final hashtable size (unique): 180152
+Size of hashtable: 52629
+Final hashtable size (unique): 50767
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 15551
+Final hashtable size (unique): 7099
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1046
+Final hashtable size (unique): 487
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 191
+Final hashtable size (unique): 91
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 26b >> 		 Runtime: 4281 ms - Result correct: true
+Size of hashtable: 180152
+Final hashtable size (unique): 180152
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 118833
+Final hashtable size (unique): 39732
+Size of hashtable: 10
+Final hashtable size (unique): 10
+Size of hashtable: 20718
+Final hashtable size (unique): 3808
+Size of hashtable: 5719
+Final hashtable size (unique): 3691
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 5406
+Final hashtable size (unique): 765
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 26c >> 		 Runtime: 4847 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 10544
+Final hashtable size (unique): 10538
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 11915
+Final hashtable size (unique): 7964
+Size of hashtable: 6646
+Final hashtable size (unique): 2742
+Size of hashtable: 29997
+Final hashtable size (unique): 6411
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 310
+Final hashtable size (unique): 10
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Query 27a >> 		 Runtime: 457 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 29997
+Final hashtable size (unique): 6411
+Size of hashtable: 119
+Final hashtable size (unique): 11
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 57
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 342
+Final hashtable size (unique): 9
+Size of hashtable: 152
+Final hashtable size (unique): 2
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 27b >> 		 Runtime: 373 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 10544
+Final hashtable size (unique): 10538
+Size of hashtable: 14331
+Final hashtable size (unique): 5016
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2293
+Final hashtable size (unique): 1911
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 29997
+Final hashtable size (unique): 6411
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 743
+Final hashtable size (unique): 4
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Query 27c >> 		 Runtime: 561 ms - Result correct: true
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 37091
+Final hashtable size (unique): 27731
+Size of hashtable: 14771
+Final hashtable size (unique): 10560
+Size of hashtable: 58552
+Final hashtable size (unique): 4005
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 49419
+Final hashtable size (unique): 3467
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 5113
+Final hashtable size (unique): 181
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 28a >> 		 Runtime: 667 ms - Result correct: true
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 37091
+Final hashtable size (unique): 27731
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 176
+Final hashtable size (unique): 111
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 20
+Final hashtable size (unique): 13
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 212
+Final hashtable size (unique): 93
+Size of hashtable: 210
+Final hashtable size (unique): 8
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 28b >> 		 Runtime: 480 ms - Result correct: true
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 37091
+Final hashtable size (unique): 27731
+Size of hashtable: 9739
+Final hashtable size (unique): 7043
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 4
+Final hashtable size (unique): 4
+Size of hashtable: 16952
+Final hashtable size (unique): 606
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 8897
+Final hashtable size (unique): 925
+Size of hashtable: 8493
+Final hashtable size (unique): 289
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 28c >> 		 Runtime: 573 ms - Result correct: true
+Size of hashtable: 50011
+Final hashtable size (unique): 50011
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 3
+Final hashtable size (unique): 3
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 22
+Final hashtable size (unique): 20
+Size of hashtable: 5
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 10
+Final hashtable size (unique): 1
+Size of hashtable: 380
+Final hashtable size (unique): 25
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 540
+Final hashtable size (unique): 1
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 29a >> 		 Runtime: 1346 ms - Result correct: true
+Size of hashtable: 50011
+Final hashtable size (unique): 50011
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 22
+Final hashtable size (unique): 20
+Size of hashtable: 5
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 5
+Final hashtable size (unique): 1
+Size of hashtable: 190
+Final hashtable size (unique): 25
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 5
+Final hashtable size (unique): 1
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 29b >> 		 Runtime: 754 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 414
+Final hashtable size (unique): 413
+Size of hashtable: 3218
+Final hashtable size (unique): 1229
+Size of hashtable: 981
+Final hashtable size (unique): 287
+Size of hashtable: 19979
+Final hashtable size (unique): 2194
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 48319
+Final hashtable size (unique): 451
+Size of hashtable: 46682
+Final hashtable size (unique): 364
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 38419
+Final hashtable size (unique): 18
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 80259
+Final hashtable size (unique): 16
+Size of hashtable: 76995
+Final hashtable size (unique): 49
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 29c >> 		 Runtime: 1199 ms - Result correct: true
+Size of hashtable: 7
+Final hashtable size (unique): 7
+Size of hashtable: 76714
+Final hashtable size (unique): 51721
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 33928
+Final hashtable size (unique): 13799
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1161
+Final hashtable size (unique): 301
+Size of hashtable: 1021
+Final hashtable size (unique): 234
+Size of hashtable: 757
+Final hashtable size (unique): 149
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 30a >> 		 Runtime: 753 ms - Result correct: true
+Size of hashtable: 7
+Final hashtable size (unique): 7
+Size of hashtable: 76714
+Final hashtable size (unique): 51721
+Size of hashtable: 49
+Final hashtable size (unique): 16
+Size of hashtable: 77
+Final hashtable size (unique): 13
+Size of hashtable: 73
+Final hashtable size (unique): 9
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 28
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 30b >> 		 Runtime: 634 ms - Result correct: true
+Size of hashtable: 7
+Final hashtable size (unique): 7
+Size of hashtable: 76714
+Final hashtable size (unique): 51721
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 68040
+Final hashtable size (unique): 22992
+Size of hashtable: 135086
+Final hashtable size (unique): 93514
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 14666
+Final hashtable size (unique): 4044
+Size of hashtable: 11866
+Final hashtable size (unique): 2085
+Size of hashtable: 8024
+Final hashtable size (unique): 1375
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 30c >> 		 Runtime: 938 ms - Result correct: true
+Size of hashtable: 10
+Final hashtable size (unique): 10
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 7
+Final hashtable size (unique): 7
+Size of hashtable: 76714
+Final hashtable size (unique): 51721
+Size of hashtable: 33928
+Final hashtable size (unique): 13799
+Size of hashtable: 31514
+Final hashtable size (unique): 12424
+Size of hashtable: 1524
+Final hashtable size (unique): 219
+Size of hashtable: 1556
+Final hashtable size (unique): 184
+Size of hashtable: 1273
+Final hashtable size (unique): 106
+Query 31a >> 		 Runtime: 1000 ms - Result correct: true
+Size of hashtable: 533
+Final hashtable size (unique): 533
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 7
+Final hashtable size (unique): 7
+Size of hashtable: 10
+Final hashtable size (unique): 10
+Size of hashtable: 135
+Final hashtable size (unique): 119
+Size of hashtable: 315
+Final hashtable size (unique): 90
+Size of hashtable: 315
+Final hashtable size (unique): 90
+Size of hashtable: 260
+Final hashtable size (unique): 55
+Size of hashtable: 84
+Final hashtable size (unique): 6
+Query 31b >> 		 Runtime: 638 ms - Result correct: true
+Size of hashtable: 10
+Final hashtable size (unique): 10
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 7
+Final hashtable size (unique): 7
+Size of hashtable: 76714
+Final hashtable size (unique): 51721
+Size of hashtable: 68040
+Final hashtable size (unique): 22992
+Size of hashtable: 63386
+Final hashtable size (unique): 20537
+Size of hashtable: 2840
+Final hashtable size (unique): 268
+Size of hashtable: 2825
+Final hashtable size (unique): 220
+Size of hashtable: 2825
+Final hashtable size (unique): 153
+Query 31c >> 		 Runtime: 1262 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 29997
+Final hashtable size (unique): 6411
+Size of hashtable: 18
+Final hashtable size (unique): 18
+Size of hashtable: 0
+Final hashtable size (unique): 0
+Size of hashtable: 0
+Final hashtable size (unique): 0
+Query 32a >> 		 Runtime: 635 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 29997
+Final hashtable size (unique): 6411
+Size of hashtable: 18
+Final hashtable size (unique): 18
+Size of hashtable: 4388
+Final hashtable size (unique): 540
+Size of hashtable: 4388
+Final hashtable size (unique): 3594
+Query 32b >> 		 Runtime: 747 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 90852
+Final hashtable size (unique): 90852
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 29997
+Final hashtable size (unique): 6411
+Size of hashtable: 11395
+Final hashtable size (unique): 8213
+Size of hashtable: 2424
+Final hashtable size (unique): 1649
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 5
+Final hashtable size (unique): 4
+Size of hashtable: 10
+Final hashtable size (unique): 9
+Size of hashtable: 10
+Final hashtable size (unique): 5
+Size of hashtable: 28
+Final hashtable size (unique): 12
+Query 33a >> 		 Runtime: 1001 ms - Result correct: true
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 29997
+Final hashtable size (unique): 16169
+Size of hashtable: 2340
+Final hashtable size (unique): 2340
+Size of hashtable: 56410
+Final hashtable size (unique): 33441
+Size of hashtable: 285
+Final hashtable size (unique): 86
+Size of hashtable: 1108
+Final hashtable size (unique): 31
+Size of hashtable: 119565
+Final hashtable size (unique): 119565
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 57
+Final hashtable size (unique): 6
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 12
+Final hashtable size (unique): 4
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Query 33b >> 		 Runtime: 871 ms - Result correct: true
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 738720
+Final hashtable size (unique): 738720
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 29997
+Final hashtable size (unique): 16169
+Size of hashtable: 870
+Final hashtable size (unique): 222
+Size of hashtable: 2283
+Final hashtable size (unique): 171
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 2283
+Final hashtable size (unique): 171
+Size of hashtable: 10536
+Final hashtable size (unique): 359
+Size of hashtable: 1
+Final hashtable size (unique): 1
+Size of hashtable: 2
+Final hashtable size (unique): 2
+Size of hashtable: 46
+Final hashtable size (unique): 13
+Size of hashtable: 114
+Final hashtable size (unique): 23
+Query 33c >> 		 Runtime: 1245 ms - Result correct: true
+Total runtime: 198349 ms

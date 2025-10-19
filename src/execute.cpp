@@ -1,7 +1,7 @@
 #include <hardware.h>
 #include <plan.h>
 #include <table.h>
-
+#include <iostream>
 namespace Contest {
 
 using ExecuteResult = std::vector<std::vector<Data>>;
@@ -19,7 +19,11 @@ struct JoinAlgorithm {
     template <class T>
     auto run() {
         namespace views = ranges::views;
+        
+        size_t build_size = build_left ? left.size() : right.size();
         std::unordered_map<T, std::vector<size_t>> hash_table;
+        hash_table.reserve(build_size);
+
         if (build_left) {
             for (auto&& [idx, record]: left | views::enumerate) {
                 std::visit(
@@ -108,7 +112,7 @@ struct JoinAlgorithm {
                     },
                     left_record[left_col]);
             }
-        }
+        }       
     }
 };
 
