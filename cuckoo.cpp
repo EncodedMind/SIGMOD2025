@@ -9,89 +9,104 @@
 // Cuckoo Hashing
 #include <iostream>
 #include <vector>
-// #include <functional> // for std::hash
-#define N 10 // Size of hash tables
+#include <bit>
 using namespace std;
 
-struct Entry{
-    int key;
-    vector<int> values;
+struct Cuckoo{
+    int N;
 
-    Entry(int k = -1, const vector<int>& vec = {}) : key(k), values(vec){}
+    struct Entry{
+        int key;
+        vector<int> values;
+
+        Entry(int k = -1, const vector<int>& vec = {}) : key(k), values(vec){}
+    };
+
+    vector<Entry> hashtable1, hashtable2;
+
+    Cuckoo(int size){ // constructor
+        N = bit_ceil(static_cast<unsigned>(size));
+        hashtable1.resize(N);
+        hashtable2.resize(N);
+    }
+
+    int hash_function1(int key) const{
+        return key & (N-1);
+    }
+
+    int hash_function2(int key) const{
+        return (key / N) & (N-1);
+    }
+
+    void insert(int key, const vector<int>& inputvalues){
+        bool table1 = true; // true for hashtable1, false for hashtable2
+        vector<int> values = inputvalues;
+        Entry current(key, values);
+
+        while(1){
+            if(table1){
+                int hash1 = hash_function1(current.key);
+                if(hashtable1[hash1].key == -1){ // position in hashtable1 is available
+                    hashtable1[hash1] = current;
+                    break;
+                }
+                else{
+                    if(hashtable1[hash1].key == current.key){ // key already exists, just add the value
+                        for(auto& v : current.values) hashtable1[hash1].values.push_back(v);
+                        break;
+                    }
+                    swap(hashtable1[hash1], current); // place new key in hashtable1
+                    table1 = false;
+                }
+            }
+            else{
+                int hash2 = hash_function2(current.key);
+                if(hashtable2[hash2].key == -1){ // position in hashtable2 is available
+                    hashtable2[hash2] = current;
+                    break;
+                }
+                else{
+                    if(hashtable2[hash2].key == current.key){ // key already exists, just add the value
+                        for(auto& v : current.values) hashtable2[hash2].values.push_back(v);
+                        break;
+                    }
+                    swap(hashtable2[hash2], current); // place new key in hashtable2
+                    table1 = true;
+                }
+            }
+        }
+    }
+
+    bool find(int key) const{
+        return (hashtable1[hash_function1(key)].key == key || hashtable2[hash_function2(key)].key == key);
+    }
+
+    void print() const{
+        auto print_table = [](const vector<Entry>& hashtable){
+            for(const auto& [key, values] : hashtable){
+                if(key == -1) cout << "{Empty} ";
+                else{
+                    cout << "{" << key << ": [";
+                    for(auto v : values) cout << v << " ";
+                    cout << "]} ";
+                }
+            }
+            cout << '\n';
+        };
+
+        cout << "Table 1: ";
+        print_table(hashtable1);
+        cout << "Table 2: ";
+        print_table(hashtable2);
+    }
 };
-
-int hash_function1(int key){
-    return key % N;
-}
-
-// int hash_function2(int key){
-//     std::hash<int> hasher;
-//     return hasher(key) % N;
-// }
-
-int hash_function2(int key){
-    return (key / N) % N;
-}
-
-void hashtable_insert(vector<Entry>& hashtable1, vector<Entry>& hashtable2, int key, const vector<int>& inputvalues){
-    bool table1 = true; // true for T1, false for T2
-    vector<int> values = inputvalues;
-    Entry current(key, values);
-
-    while(1){
-        if(table1){
-            int hash1 = hash_function1(current.key);
-            if(hashtable1[hash1].key == -1){ // position in T1 is available
-                hashtable1[hash1] = current;
-                break;
-            }
-            else{
-                if(hashtable1[hash1].key == current.key){ // key already exists, just add the value
-                    for(auto& v : current.values) hashtable1[hash1].values.push_back(v);
-                    break;
-                }
-                swap(hashtable1[hash1], current); // place new key in T1
-                table1 = false;
-            }
-        }
-        else{
-            int hash2 = hash_function2(current.key);
-            if(hashtable2[hash2].key == -1){ // position in T2 is available
-                hashtable2[hash2] = current;
-                break;
-            }
-            else{
-                if(hashtable2[hash2].key == current.key){ // key already exists, just add the value
-                    for(auto& v : current.values) hashtable2[hash2].values.push_back(v);
-                    break;
-                }
-                swap(hashtable2[hash2], current); // place new key in T2
-                table1 = true;
-            }
-        }
-    }
-}
-
-bool hashtable_find(const vector<Entry>& hashtable1, const vector<Entry>& hashtable2, int key){
-    return (hashtable1[hash_function1(key)].key == key || hashtable2[hash_function2(key)].key == key);
-}
-
-void hashtable_print(const vector<Entry>& hashtable){
-    for(auto [key, values] : hashtable){
-        cout << "{" << key << ": [";
-        for(auto v : values) cout << v << " ";
-        cout << "]} ";
-    }
-    cout << endl;
-}
 
 int main(){
 
-    vector<Entry> T1(N);
-    vector<Entry> T2(N);
+    Cuckoo hashtable(10);
     vector<pair<int, int>> data = {
         {10, 100},    // hash1=0, hash2=1
-        {20, 200},    // hash1=0, hash2=2 - forces first kickout from T1
+        {20, 200},    // hash1=0, hash2=2 - forces first kickout from hashtable1
         {30, 300},    // hash1=0, hash2=3 - forces multiple kickouts
         {110, 110},   // hash1=0, hash2=11%10=1 - creates chain
         {10, 101},    // Tests duplicate key handling
@@ -101,17 +116,15 @@ int main(){
     };
 
     for(auto [key, value] : data){
-        hashtable_insert(T1, T2, key, {value});
+        hashtable.insert(key, {value});
     }
 
-    cout << "Table 1: ";
-    hashtable_print(T1);
-    
-    cout << "Table 2: ";
-    hashtable_print(T2);
+    hashtable.print();
 
-    cout << (hashtable_find(T1, T2, 30) ? "Found 30" : "30 not found") << endl;
-    cout << (hashtable_find(T1, T2, 100) ? "Found 100" : "100 not found") << endl;
+    cout << (hashtable.find(30) ? "Found 30\n" : "30 not found\n");
+    cout << (hashtable.find(100) ? "Found 100\n" : "100 not found\n");
 
     return 0;
 }
+
+// g++ -std=c++20 cuckoo.cpp -o cuckoo && ./cuckoo
