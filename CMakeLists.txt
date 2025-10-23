@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(SigmodContest)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20) # C++20 for std::bit_ceil - find next power of 2
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

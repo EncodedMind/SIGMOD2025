@@ -21,6 +21,7 @@ struct JoinAlgorithm {
         namespace views = ranges::views;
         
         size_t build_size = build_left ? left.size() : right.size();
+        build_size = std::bit_ceil(build_size); // next power of 2
         std::unordered_map<T, std::vector<size_t>> hash_table;
         hash_table.reserve(build_size);
 
