@@ -1,19 +1,13 @@
-// Να κάνω resize, load factor και cycle detection
-//
-// Αν load factor > 0.5 ή αν κύκλος, resize: Διπλασιάζω μέγεθος και επανεισάγω
-// Προσοχή: Μπορεί να προκύψει resize μέσα σε resize
-// Cycle detection:
-// i) Αν συγκρίνουμε στοιχείο που έχουμε ήδη μετακινήσει
-// ii) ctr στοιχεία που μετακινήθηκαν και αν ctr=πλήθος στοιχείων στους πίνακες, κύκλος
-// --------------------------
 // Cuckoo Hashing
 #include <iostream>
 #include <vector>
 #include <bit>
+#include <unordered_set>
 using namespace std;
 
 struct Cuckoo{
     int N;
+    int inserted;
 
     struct Entry{
         int key;
@@ -28,6 +22,7 @@ struct Cuckoo{
         N = bit_ceil(static_cast<unsigned>(size));
         hashtable1.resize(N);
         hashtable2.resize(N);
+        inserted = 0;
     }
 
     int hash_function1(int key) const{
@@ -38,16 +33,40 @@ struct Cuckoo{
         return (key / N) & (N-1);
     }
 
+    void rehash(){
+        vector<Entry> old1 = hashtable1;
+        vector<Entry> old2 = hashtable2;
+
+        N *= 2;
+        inserted = 0;
+
+        hashtable1.clear();
+        hashtable1.resize(N);
+        hashtable2.clear();
+        hashtable2.resize(N);
+
+        for(auto& e : old1){
+            if(e.key != -1) insert(e.key, e.values);
+        }
+        for(auto& e : old2){
+            if(e.key != -1) insert(e.key, e.values);
+        }
+    }
+
+    // X: amount of distinct keys in the arrays. if kicked X distinct keys, rehash
     void insert(int key, const vector<int>& inputvalues){
         bool table1 = true; // true for hashtable1, false for hashtable2
         vector<int> values = inputvalues;
         Entry current(key, values);
+
+        unordered_set<int> kicked;
 
         while(1){
             if(table1){
                 int hash1 = hash_function1(current.key);
                 if(hashtable1[hash1].key == -1){ // position in hashtable1 is available
                     hashtable1[hash1] = current;
+                    inserted++;
                     break;
                 }
                 else{
@@ -56,6 +75,7 @@ struct Cuckoo{
                         break;
                     }
                     swap(hashtable1[hash1], current); // place new key in hashtable1
+                    kicked.insert(current.key);
                     table1 = false;
                 }
             }
@@ -63,6 +83,7 @@ struct Cuckoo{
                 int hash2 = hash_function2(current.key);
                 if(hashtable2[hash2].key == -1){ // position in hashtable2 is available
                     hashtable2[hash2] = current;
+                    inserted++;
                     break;
                 }
                 else{
@@ -71,8 +92,15 @@ struct Cuckoo{
                         break;
                     }
                     swap(hashtable2[hash2], current); // place new key in hashtable2
+                    kicked.insert(current.key);
                     table1 = true;
                 }
+            }
+            if((int)kicked.size() >= inserted){
+                // cout << "REHASH NEEDED\n";
+                rehash();
+                insert(current.key, current.values);
+                return;
             }
         }
     }
@@ -94,9 +122,9 @@ struct Cuckoo{
             cout << '\n';
         };
 
-        cout << "Table 1: ";
+        cout << "Table 1:\n";
         print_table(hashtable1);
-        cout << "Table 2: ";
+        cout << "Table 2:\n";
         print_table(hashtable2);
     }
 };

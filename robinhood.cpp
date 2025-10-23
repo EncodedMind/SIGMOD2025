@@ -1,5 +1,3 @@
-// Να κάνω load factor και resize
-// -------------------------------
 // Robin Hood Hashing
 #include <iostream>
 #include <vector>
@@ -70,7 +68,7 @@ struct Robinhood{
     }
 
     void print() const{
-        cout << "Final table: ";
+        cout << "Final table:\n";
         for(int i=0; i<N; ++i){
             const auto& [key, values, psl] = hashtable[i];
             cout << "Bucket " << i << ": ";
@@ -87,18 +85,21 @@ struct Robinhood{
 
 int main(){
     
-    Robinhood hashtable(10);
-    vector<pair<int, int>> data = {
-        {10, 100},   // Base case, hashes to 10
-        {26, 260},   // Hashes to 10, forces collision
-        {42, 420},   // Hashes to 10, forces second collision
-        {9, 900},    // Hashes to 9, will wrap around
-        {19, 190},   // Hashes to 9, forces wrap-around collision
-        {10, 101},   // Duplicate key with new value
-        {20, 201},   // Another duplicate key
-        {40, 400},   // Hashes to 0, creates maximum PSL
-        {50, 500}    // Should trigger multiple Robin Hood steals
+    Robinhood hashtable(11);
+    vector<pair<int,int>> data = {
+        {16, 160},   // hashes to 0
+        {32, 320},   // hashes to 0, forces collision
+        {48, 480},   // hashes to 0, second collision
+        {1, 10},     // hashes to 1
+        {17, 170},   // hashes to 1, collision
+        {2, 20},     // hashes to 2
+        {18, 180},   // hashes to 2, collision
+        {16, 161},   // duplicate key, appends to vector
+        {32, 321},   // duplicate key, appends to vector
+        {63, 630},    // hashes to 15, last bucket
+        {79, 790}    // hashes to 15, last bucket → tests wrap-around
     };
+
 
     for(auto [key, value] : data){
         hashtable.insert(key, {value});

@@ -1,6 +1,3 @@
-// Να κάνω resize, load factor
-// Τι H θα ορίσω;
-// --------------------------
 // Hopscotch Hashing
 #include <iostream>
 #include <vector>
@@ -31,6 +28,19 @@ struct Hopscotch{
         return (key & (N-1));
     }
 
+    void resize(){
+        vector<Entry> old = hashtable;
+
+        N *= 2;
+
+        hashtable.clear();
+        hashtable.resize(N);
+
+        for(auto& e : old){
+            if(e.key != -1) insert(e.key, e.values);
+        }
+    }
+
     void insert(int key, const vector<int>& inputvalues){
         int i = hash_function(key);
         vector<int> values = inputvalues;
@@ -45,17 +55,18 @@ struct Hopscotch{
         }
 
         if(hashtable[i].bitmap.all()){
-            cout << "REHASH NEEDED-1\n";
-            exit(1);
+            resize();
+            insert(key, values);
+            return;
         }
 
         int j = i;
         while(hashtable[j].key != -1){ // Find next free spot
             j = ((j+1) & (N-1));
-            if(j == i){ // Full table
-                cout << "RESIZE NEEDED-2\n";
-                exit(2);
-            }
+            // if(j == i){ // Full table - Will never happen
+            //     cout << "RESIZE NEEDED-2\n";
+            //     exit(2);
+            // }
         }
         // now j is the free spot
 
@@ -77,8 +88,9 @@ struct Hopscotch{
             }
 
             if(y == -1){ // y not found
-                cout << "RESIZE NEEDED-3\n";
-                exit(3);
+                resize();
+                insert(key, values);
+                return;
             }
 
             int hashy = hash_function(hashtable[y].key);
