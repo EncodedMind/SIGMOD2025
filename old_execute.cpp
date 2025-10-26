@@ -1,8 +1,7 @@
 #include <hardware.h>
 #include <plan.h>
 #include <table.h>
-#include <robinhood.h>
-
+#include <iostream>
 namespace Contest {
 
 using ExecuteResult = std::vector<std::vector<Data>>;
@@ -22,35 +21,34 @@ struct JoinAlgorithm {
         namespace views = ranges::views;
         
         size_t build_size = build_left ? left.size() : right.size();
-        Robinhood<T> robinhoodtable(build_size);
+        build_size = std::bit_ceil(build_size); // next power of 2
+        std::unordered_map<T, std::vector<size_t>> hash_table;
+        hash_table.reserve(build_size);
 
         if (build_left) {
             for (auto&& [idx, record]: left | views::enumerate) {
                 std::visit(
-                    [&robinhoodtable, idx = idx](const auto& key) {
+                    [&hash_table, idx = idx](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            int pos = robinhoodtable.find(key);
-                            if( pos == -1) {
-                                robinhoodtable.insert(key, {idx});
+                            if (auto itr = hash_table.find(key); itr == hash_table.end()) {
+                                hash_table.emplace(key, std::vector<size_t>(1, idx));
                             } else {
-                                robinhoodtable.hashtable[pos].values.push_back(idx);
+                                itr->second.push_back(idx);
                             }
                         } else if constexpr (not std::is_same_v<Tk, std::monostate>) {
                             throw std::runtime_error("wrong type of field");
                         }
-                    }, 
-                record[left_col]);
-
+                    },
+                    record[left_col]);
             }
             for (auto& right_record: right) {
                 std::visit(
                     [&](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            int pos = robinhoodtable.find(key);
-                            if(pos != -1){
-                                for(auto left_idx : robinhoodtable.hashtable[pos].values){
+                            if (auto itr = hash_table.find(key); itr != hash_table.end()) {
+                                for (auto left_idx: itr->second) {
                                     auto&             left_record = left[left_idx];
                                     std::vector<Data> new_record;
                                     new_record.reserve(output_attrs.size());
@@ -65,7 +63,6 @@ struct JoinAlgorithm {
                                     results.emplace_back(std::move(new_record));
                                 }
                             }
-
                         } else if constexpr (not std::is_same_v<Tk, std::monostate>) {
                             throw std::runtime_error("wrong type of field");
                         }
@@ -75,14 +72,13 @@ struct JoinAlgorithm {
         } else {
             for (auto&& [idx, record]: right | views::enumerate) {
                 std::visit(
-                    [&robinhoodtable, idx = idx](const auto& key) {
+                    [&hash_table, idx = idx](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            int pos = robinhoodtable.find(key);
-                            if (pos == -1) {
-                                robinhoodtable.insert((key), {idx});
+                            if (auto itr = hash_table.find(key); itr == hash_table.end()) {
+                                hash_table.emplace(key, std::vector<size_t>(1, idx));
                             } else {
-                                robinhoodtable.hashtable[pos].values.push_back(idx);
+                                itr->second.push_back(idx);
                             }
                         } else if constexpr (not std::is_same_v<Tk, std::monostate>) {
                             throw std::runtime_error("wrong type of field");
@@ -95,9 +91,8 @@ struct JoinAlgorithm {
                     [&](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            int pos = robinhoodtable.find(key);
-                            if(pos != -1){
-                                for(auto right_idx : robinhoodtable.hashtable[pos].values){
+                            if (auto itr = hash_table.find(key); itr != hash_table.end()) {
+                                for (auto right_idx: itr->second) {
                                     auto&             right_record = right[right_idx];
                                     std::vector<Data> new_record;
                                     new_record.reserve(output_attrs.size());
