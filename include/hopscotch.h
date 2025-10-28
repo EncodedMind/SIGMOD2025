@@ -3,11 +3,9 @@
 #include <bit>
 #include <functional>
 #include <bitset>
-#include <stdexcept>
-#include <iostream>
 
 template <typename T>
-struct Hopscotch{
+struct Hashalgorithm{
     static constexpr int H = 64; // Neighborhood size (test with 32 or 64)
     size_t N;
 
@@ -22,7 +20,7 @@ struct Hopscotch{
 
     std::vector<Entry> hashtable;
 
-    Hopscotch(size_t size){ // constructor
+    Hashalgorithm(size_t size){ // constructor
         N = std::bit_ceil(size);
         hashtable.resize(N); // hashtable.resize(N, Entry()); grgr
     }

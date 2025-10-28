@@ -1,10 +1,7 @@
 #include <hardware.h>
 #include <plan.h>
 #include <table.h>
-// Uncomment the algorithm to use for hashing (only one can be uncommented)
-#include <robinhood.h>
-// #include <cuckoo.h>
-// #include <hopscotch.h>
+#include <hopscotch.h>
 
 namespace Contest {
 
@@ -25,15 +22,15 @@ struct JoinAlgorithm {
         namespace views = ranges::views;
         
         size_t build_size = build_left ? left.size() : right.size();
-        Hashalgorithm<T> table(build_size);
+        Hopscotch<T> hopscotchtable(build_size);
 
         if (build_left) {
             for (auto&& [idx, record]: left | views::enumerate) {
                 std::visit(
-                    [&table, idx = idx](const auto& key) {
+                    [&hopscotchtable, idx = idx](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            table.insert(key, {idx});
+                            hopscotchtable.insert(key, {idx});
                         } else if constexpr (not std::is_same_v<Tk, std::monostate>) {
                             throw std::runtime_error("wrong type of field");
                         }
@@ -46,7 +43,7 @@ struct JoinAlgorithm {
                     [&](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            auto vals = table.find_values(key);
+                            auto vals = hopscotchtable.find_values(key);
                             if(vals.size() > 0){
                                 for(auto left_idx : vals){
                                     auto&             left_record = left[left_idx];
@@ -73,10 +70,10 @@ struct JoinAlgorithm {
         } else {
             for (auto&& [idx, record]: right | views::enumerate) {
                 std::visit(
-                    [&table, idx = idx](const auto& key) {
+                    [&hopscotchtable, idx = idx](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            table.insert(key, {idx});
+                            hopscotchtable.insert(key, {idx});
                         } else if constexpr (not std::is_same_v<Tk, std::monostate>) {
                             throw std::runtime_error("wrong type of field");
                         }
@@ -88,7 +85,7 @@ struct JoinAlgorithm {
                     [&](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            auto vals = table.find_values(key);
+                            auto vals = hopscotchtable.find_values(key);
                             if(vals.size() > 0){
                                 for(auto right_idx : vals){
                                     auto&             right_record = right[right_idx];

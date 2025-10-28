@@ -4,7 +4,7 @@
 #include <functional>
 
 template <typename T>
-struct Robinhood{
+struct Hashalgorithm{
     size_t N;
 
     struct Entry{
@@ -18,7 +18,7 @@ struct Robinhood{
 
     std::vector<Entry> hashtable;
 
-    Robinhood(size_t size){ // constructor
+    Hashalgorithm(size_t size){ // constructor
         N = std::bit_ceil(size);
         hashtable.resize(N, Entry());
     }
