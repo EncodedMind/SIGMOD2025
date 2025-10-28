@@ -1,7 +1,7 @@
 #include <hardware.h>
 #include <plan.h>
 #include <table.h>
-#include <robinhood.h>
+#include <cuckoo.h>
 
 namespace Contest {
 
@@ -22,20 +22,15 @@ struct JoinAlgorithm {
         namespace views = ranges::views;
         
         size_t build_size = build_left ? left.size() : right.size();
-        Robinhood<T> robinhoodtable(build_size);
+        Cuckoo<T> cuckootable(build_size);
 
         if (build_left) {
             for (auto&& [idx, record]: left | views::enumerate) {
                 std::visit(
-                    [&robinhoodtable, idx = idx](const auto& key) {
+                    [&cuckootable, idx = idx](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            int pos = robinhoodtable.find(key);
-                            if( pos == -1) {
-                                robinhoodtable.insert(key, {idx});
-                            } else {
-                                robinhoodtable.hashtable[pos].values.push_back(idx);
-                            }
+                            cuckootable.insert(key, {idx});
                         } else if constexpr (not std::is_same_v<Tk, std::monostate>) {
                             throw std::runtime_error("wrong type of field");
                         }
@@ -48,9 +43,9 @@ struct JoinAlgorithm {
                     [&](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            int pos = robinhoodtable.find(key);
-                            if(pos != -1){
-                                for(auto left_idx : robinhoodtable.hashtable[pos].values){
+                            auto vals = cuckootable.find_values(key);
+                            if(vals.size() > 0){
+                                for(auto left_idx : vals){
                                     auto&             left_record = left[left_idx];
                                     std::vector<Data> new_record;
                                     new_record.reserve(output_attrs.size());
@@ -75,15 +70,10 @@ struct JoinAlgorithm {
         } else {
             for (auto&& [idx, record]: right | views::enumerate) {
                 std::visit(
-                    [&robinhoodtable, idx = idx](const auto& key) {
+                    [&cuckootable, idx = idx](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            int pos = robinhoodtable.find(key);
-                            if (pos == -1) {
-                                robinhoodtable.insert((key), {idx});
-                            } else {
-                                robinhoodtable.hashtable[pos].values.push_back(idx);
-                            }
+                            cuckootable.insert(key, {idx});
                         } else if constexpr (not std::is_same_v<Tk, std::monostate>) {
                             throw std::runtime_error("wrong type of field");
                         }
@@ -95,9 +85,9 @@ struct JoinAlgorithm {
                     [&](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            int pos = robinhoodtable.find(key);
-                            if(pos != -1){
-                                for(auto right_idx : robinhoodtable.hashtable[pos].values){
+                            auto vals = cuckootable.find_values(key);
+                            if(vals.size() > 0){
+                                for(auto right_idx : vals){
                                     auto&             right_record = right[right_idx];
                                     std::vector<Data> new_record;
                                     new_record.reserve(output_attrs.size());
@@ -118,7 +108,7 @@ struct JoinAlgorithm {
                     },
                     left_record[left_col]);
             }
-        }       
+        }
     }
 };
 
