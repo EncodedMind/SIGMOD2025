@@ -24,7 +24,7 @@ jobs:
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
 
       - name: Build unit tests
-        run: cmake --build build --target unit_tests -- -j $(nproc)
+        run: cmake --build build --target hash_tests -- -j $(nproc)
 
       - name: Run unit tests
-        run: ./build/unit_tests
+        run: ./build/hash_tests
