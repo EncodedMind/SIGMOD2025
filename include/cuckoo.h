@@ -4,7 +4,7 @@
 #include <functional>
 
 template <typename T>
-struct Cuckoo{
+struct Hashalgorithm{
     size_t N;
     size_t inserted;
 
@@ -18,7 +18,7 @@ struct Cuckoo{
 
     std::vector<Entry> hashtable1, hashtable2;
 
-    Cuckoo(size_t size){ // constructor
+    Hashalgorithm(size_t size){ // constructor
         N = std::bit_ceil(size);
         hashtable1.resize(N, Entry());
         hashtable2.resize(N, Entry());
