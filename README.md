@@ -134,7 +134,7 @@ Code is compiled with Clang 18.
 
 ### Hash functions
 
-* For hashing functions, we implemented **FNV-1a** and **Murmur-like** variants for performance testing.
+* For hashing functions, we implemented **FNV-1a** and **Murmur-like** variants for performance testing, but they ended up being slower, so we stuck with `std::hash`.
 
 ---
 
@@ -146,22 +146,25 @@ We decided **not** to display each individual query time, since that data is too
 
 ### Timing Comparison
 
-| Algorithm         | Run 1 (ms) | Run 2 (ms) | Run 3 (ms) | Run 4 (ms) | Run 5 (ms) | **Average (ms)** |
-| ----------------- | ---------- | ---------- | ---------- | ---------- | ---------- | ---------------- |
-| Unordered map     | TBD        | TBD        | TBD        | TBD        | TBD        | TBD              |
-| Robin Hood        | TBD        | TBD        | TBD        | TBD        | TBD        | TBD              |
-| Cuckoo            | TBD        | TBD        | TBD        | TBD        | TBD        | TBD              |
-| Hopscotch         | TBD        | TBD        | TBD        | TBD        | TBD        | TBD              |
+| Algorithm         | Run 1 (ms)    | Run 2 (ms)    | Run 3 (ms)    | Run 4 (ms)    | Run 5 (ms)    | **Average (ms)**    |
+| ----------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------------- |
+| Unordered map     | 163384        | 159158        | 159332        | 158695        | 159671        | 160048              |
+| Robin Hood        | 922135        | 975615        | 915348        | 915743        | 915664        | 928901              |
+| Cuckoo            | 201315        | 186279        | 183182        | 186543        | 183697        | 188203              |
+| Hopscotch         | 235088        | 227406        | 229156        | 228974        | 228851        | 229895              |
+
+- The performance comparison shows that `std::unordered_map` was the fastest implementation overall, achieving the lowest average runtime (≈160 seconds).
+- Among the custom algorithms, Cuckoo hashing performed the best, followed by Hopscotch, while Robin Hood hashing was significantly slower.
 
 ---
 
 ## Team Contributions
 
-| Member        | Contributions   |
-| ------------  | --------------- |
-| **Dimitris**  | TBD             |
-| **Evaggelos** | TBD             |
-| **Apostolos** | TBD             |
+| Member             | Contributions                                                                                                                                                                                             |
+| -----------------  | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **D. Andreakis**   | • Implemented all three algorithms and integrated them into the main project.<br>• Set up continuous integration through GitHub Actions.<br>• Prepared the README.md.<br>• Executed performance testing.  |
+| **Ev. Vasileiou**  | • Created the Makefile to simplify compilation.<br>• Implemented the unit tests for Robin Hood and co-implemented the unit tests for Cuckoo and Hopscotch.                                                |
+| **Ap. Kolokouras** | • Proposed integrating all components into a single executable with modular header files.<br>• Co-implemented the unit tests for Cuckoo and Hopscotch.                                                    |
 
 ---
 
