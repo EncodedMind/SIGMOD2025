@@ -1,0 +1,30 @@
+name: C++ CI - Unit Tests
+
+on:
+  push:
+    branches:
+      - main
+      - '**'
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake clang-18
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
+
+      - name: Build unit tests
+        run: cmake --build build --target hash_tests -- -j $(nproc)
+
+      - name: Run unit tests
+        run: ./build/hash_tests
