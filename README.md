@@ -28,11 +28,11 @@ k23a-2025-d1-ctrl-s-our-souls/
 ├── src/
 │   ├── execute.cpp
 ├── include/
-│   ├── robinhood.hpp
-│   ├── cuckoo.hpp
-│   ├── hopscotch.hpp
+│   ├── robinhood.h
+│   ├── cuckoo.h
+│   ├── hopscotch.h
 ├── tests/
-│   └── unit_tests.cpp
+│   └── hash_tests.cpp
 ├── job/
 ├── CMakeLists.txt
 ├── Makefile
