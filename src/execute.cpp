@@ -1,8 +1,9 @@
 #include <hardware.h>
 #include <plan.h>
 #include <table.h>
+
 // Uncomment the algorithm to use for hashing (only one can be uncommented)
-#include <robinhood.h>
+// #include <robinhood.h>
 // #include <cuckoo.h>
 // #include <hopscotch.h>
 
@@ -25,6 +26,7 @@ struct JoinAlgorithm {
         namespace views = ranges::views;
         
         size_t build_size = build_left ? left.size() : right.size();
+        
         Hashalgorithm<T> table(build_size);
 
         if (build_left) {
