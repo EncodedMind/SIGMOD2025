@@ -2,34 +2,63 @@
 #include <vector>
 #include <bit>
 #include <functional>
+#include <cstddef>
+#include <limits>
 
-template <typename T>
+template <typename T, typename Value = size_t>
 struct Hashalgorithm{
     size_t N;
 
     struct Entry{
         T key;
-        std::vector<size_t> values;
+        std::vector<Value> values;
         int psl;
         bool occupied;
 
-        Entry(T k = T{}, const std::vector<size_t>& vec = {}, int p = -1, bool occ = false) : key(k), values(vec), psl(p), occupied(occ){};
+        Entry(T k = T{}, const std::vector<Value>& vec = {}, int p = -1, bool occ = false) : key(k), values(vec), psl(p), occupied(occ){};
     };
 
     std::vector<Entry> hashtable;
 
+    size_t nextpow2(size_t n){
+        if(n <= 1) return 1;
+        n--;
+        n |= n >> 1;
+        n |= n >> 2;
+        n |= n >> 4;
+        n |= n >> 8;
+        n |= n >> 16;
+    #if ULONG_MAX > 0xFFFFFFFF
+        n |= n >> 32; // for 64 bit values
+    #endif
+        return n + 1;
+    }
+
     Hashalgorithm(size_t size){ // constructor
-        N = std::bit_ceil(size);
+        N = nextpow2(size) * 2;
         hashtable.resize(N, Entry());
     }
 
-    size_t hash_function(const auto& key) const{
-        return std::hash<T>{}(key) & (N-1);
+    size_t hash_function(const T& key) const{
+        if constexpr(std::is_same_v<T, int32_t> || std::is_same_v<T, uint32_t>){  
+            // CRC 
+            uint32_t x = static_cast<uint32_t>(key);
+            x ^= x >> 16;
+            x *= 0x85ebca6b;
+            x ^= x >> 13;
+            x *= 0xc2b2ae35;
+            x ^= x >> 16;
+            return x & (N-1);
+
+        }
+        else{
+            return std::hash<T>{}(key) & (N-1);
+        }
     }
 
-    void insert(const auto& inputkey, const std::vector<size_t>& inputvalues){
+    void insert(const auto& inputkey, const std::vector<Value>& inputvalues){
         T key = inputkey;
-        std::vector<size_t> values = inputvalues;
+        std::vector<Value> values = inputvalues;
         size_t pos = hash_function(key);
         int psl = 0;
         Entry current(key, values, psl, true);
@@ -53,7 +82,7 @@ struct Hashalgorithm{
         }
     }
 
-    std::vector<size_t> find_values(const T& key) const{
+    std::vector<Value> find_values(const T& key) const{
         size_t pos = hash_function(key);
         int psl = 0;
 
