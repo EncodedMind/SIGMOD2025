@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(SigmodContest)
 
-set(CMAKE_CXX_STANDARD 20) # C++20 for std::bit_ceil - find next power of 2
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -93,7 +93,7 @@ add_executable(unit_tests ${SIGMODPC_SRC} tests/unit_tests.cpp)
 add_executable(build_database tests/build_database.cpp)
 
 # Tests Targets
-add_executable(hash_tests  tests/hash_tests.cpp)
+add_executable(cuckoo_tests  tests/cuckoo_tests.cpp)
 add_executable(hopscotch_tests  tests/hopscotch_tests.cpp)
 add_executable(robin_tests tests/robin_tests.cpp)
 
@@ -102,7 +102,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_definitions(run PRIVATE _CRT_SECURE_NO_WARNINGS)
     target_compile_definitions(build_database PRIVATE _CRT_SECURE_NO_WARNINGS)
     target_compile_definitions(unit_tests PRIVATE _CRT_SECURE_NO_WARNINGS)
-    target_compile_definitions(hash_tests PRIVATE _CRT_SECURE_NO_WARNINGS)
+    target_compile_definitions(cuckoo_tests PRIVATE _CRT_SECURE_NO_WARNINGS)
     target_compile_definitions(hopscotch_tests PRIVATE _CRT_SECURE_NO_WARNINGS)
     target_compile_definitions(robin_tests PRIVATE _CRT_SECURE_NO_WARNINGS) 
 endif()
@@ -122,14 +122,14 @@ target_link_libraries(run PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json 
 target_compile_definitions(run PRIVATE TEAMOPT_USE_DUCKDB)
 target_link_libraries(build_database PRIVATE fmt duckdb)
 target_link_libraries(unit_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
-target_link_libraries(hash_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
+target_link_libraries(cuckoo_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
 target_link_libraries(hopscotch_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
 target_link_libraries(robin_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
 
 target_include_directories(run PRIVATE include)
 target_include_directories(build_database PRIVATE include)
 target_include_directories(unit_tests PRIVATE include)
-target_include_directories(hash_tests PRIVATE include)
+target_include_directories(cuckoo_tests PRIVATE include)
 target_include_directories(hopscotch_tests PRIVATE include)
 target_include_directories(robin_tests PRIVATE include)
 

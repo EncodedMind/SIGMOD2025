@@ -1,5 +1,5 @@
 CXX = clang++
-CXXFLAGS = -std=c++20 -Wall -g
+CXXFLAGS = -Wall -g
 
 TARGETS = robinhood hopscotch cuckoo
 
