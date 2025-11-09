@@ -118,7 +118,7 @@ cmake --build build -- -j $(nproc) fast
 
 Code is compiled with Clang 18.
 
-**Make sure that only ONE header file is uncommented on the top of the `execute.cpp` file.**
+**Make sure that only ONE header file is uncommented on the top of the `execute.cpp` file.** *Default is Robin Hood.*
 
 ---
 
@@ -130,11 +130,12 @@ Code is compiled with Clang 18.
 
 * Cuckoo: We detect cycles by counting the number of elements that have been moved. If we reach the total number of elements in the array, then a cycle must necessarily exist.
 
-* Hopscotch: We rehash when the neighbourhood of a key is full or when there is no availabe slot to move the "empty slot".
+* Hopscotch: We rehash when the neighbourhood of a key is full or when there is no availabe slot to move the "empty slot". The size of the neighborhood (H) was determined based on the original paper, which suggests H=32 or H=64. H=32 provided a slightly better average (-700ms).
 
 ### Hash functions
 
-* For hashing functions, we implemented **FNV-1a** and **Murmur-like** variants for performance testing, but they ended up being slower, so we stuck with `std::hash`.
+* For hashing functions, we implemented **CRC** and **Fibonacci Constant** for performance testing, which made the execution faster.
+* The size of each hashtable is the smallest power of 2 equal or larger than the build size. This allows us to do faster `%N` operations. We doubled this number to leave a larger margin and avoid collisions, which skyrocketed the total performance.
 
 ---
 
@@ -142,19 +143,19 @@ Code is compiled with Clang 18.
 
 Each algorithm was executed **five times** to account for random variations in query order and hash collisions. We then computed the **average total execution time** across all queries for a fair comparison.
 
-We decided **not** to display each individual query time, since that data is too granular and noisy. Instead, we present the **average total time** per algorithm.
+We decided **not** to display each individual query time. Instead, we present the **average total time** per algorithm.
 
 ### Timing Comparison
 
 | Algorithm         | Run 1 (ms)    | Run 2 (ms)    | Run 3 (ms)    | Run 4 (ms)    | Run 5 (ms)    | **Average (ms)**    |
 | ----------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------------- |
 | Unordered map     | 163384        | 159158        | 159332        | 158695        | 159671        | 160048              |
-| Robin Hood        | 922135        | 975615        | 915348        | 915743        | 915664        | 928901              |
-| Cuckoo            | 201315        | 186279        | 183182        | 186543        | 183697        | 188203              |
-| Hopscotch         | 235088        | 227406        | 229156        | 228974        | 228851        | 229895              |
+| Robin Hood        | 183586        | 182904        | 182423        | 184060        | 186735        | 183942              |
+| Cuckoo            | 178391        | 178893        | 178260        | 178087        | 177715        | 178869              |
+| Hopscotch         | 174988        | 175875        | 173503        | 172534        | 172459        | 173872              |
 
 - The performance comparison shows that `std::unordered_map` was the fastest implementation overall, achieving the lowest average runtime (≈160 seconds).
-- Among the custom algorithms, Cuckoo hashing performed the best, followed by Hopscotch, while Robin Hood hashing was significantly slower.
+- Among the custom algorithms, Hopscotch hashing performed the best, followed by Cuckoo, while Robin Hood hashing was a little slower.
 
 ---
 
@@ -163,8 +164,8 @@ We decided **not** to display each individual query time, since that data is too
 | Member             | Contributions                                                                                                                                                                                             |
 | -----------------  | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **D. Andreakis**   | • Implemented all three algorithms and integrated them into the main project.<br>• Set up continuous integration through GitHub Actions.<br>• Prepared the README.md.<br>• Executed performance testing.  |
-| **Ev. Vasileiou**  | • Created the Makefile to simplify compilation.<br>• Implemented the unit tests for Robin Hood and co-implemented the unit tests for Cuckoo and Hopscotch.                                                |
-| **Ap. Kolokouras** | • Proposed integrating all components into a single executable with modular header files.<br>• Co-implemented the unit tests for Cuckoo and Hopscotch.                                                    |
+| **Ev. Vasileiou**  | • Created the Makefile to simplify compilation.<br>• Implemented the unit tests for Robin Hood and Cuckoo.                                                                                                |
+| **Ap. Kolokouras** | • Proposed integrating all components into a single executable with modular header files.<br>• Implemented the unit tests for Hopscotch.                                                                  |
 
 ---
 

@@ -3,9 +3,9 @@
 #include <table.h>
 
 // Uncomment the algorithm to use for hashing (only one can be uncommented)
-// #include <robinhood.h>
-// #include <cuckoo.h>
+#include <robinhood.h>
 // #include <hopscotch.h>
+// #include <cuckoo.h>
 
 namespace Contest {
 
