@@ -10,8 +10,7 @@ TEST_CASE("Robin Hood Hashing", "[robinhood]"){
     using Robinhood = Hashalgorithm<int32_t>;
 
     SECTION("Basic Insert and Find"){
-        // N = 16
-        Robinhood hashtable(11);
+        Robinhood hashtable(11); // N = 32
 
         hashtable.insert(1, {static_cast<size_t>(10)});
         hashtable.insert(16, {static_cast<size_t>(20)});
