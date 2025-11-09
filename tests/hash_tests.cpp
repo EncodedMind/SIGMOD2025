@@ -240,7 +240,7 @@ TEST_CASE("Collision Handling string", "[collision][varchar][string]") { testCol
     This test includes 32 picked keys that hash to the same position to fill the neighborhood and trigger a rehash */
 TEST_CASE ("Full Neighborhood Rehash", "[rehash][neighborhood]") {
         SECTION("Neighborhood Full Resizing"){
-        HopscotchGEN<int> hashtable(32);
+        Hopscotch hashtable(32);
         REQUIRE(hashtable.N == 64);
 
         std::vector<int> keys = { 0, 235, 267, 286, 299, 362, 375, 423, 436, 504, 671,
