@@ -56,7 +56,7 @@ struct Hashalgorithm{
         }
     }
 
-    void insert(const auto& inputkey, const std::vector<Value>& inputvalues){
+    void insert(const T& inputkey, const std::vector<Value>& inputvalues){
         T key = inputkey;
         std::vector<Value> values = inputvalues;
         size_t pos = hash_function(key);
