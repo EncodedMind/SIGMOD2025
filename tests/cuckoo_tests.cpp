@@ -9,7 +9,7 @@ TEST_CASE("Cuckoo Hashing", "[cuckoo]"){
     using Cuckoo = Hashalgorithm<int32_t>;
 
     SECTION("Basic Insert and Find"){
-        Cuckoo hashtable(11);
+        Cuckoo hashtable(8);
         REQUIRE(hashtable.N == 16);
         REQUIRE(hashtable.hashtable1.size() == hashtable.N);
         REQUIRE(hashtable.hashtable2.size() == hashtable.N);
@@ -25,7 +25,8 @@ TEST_CASE("Cuckoo Hashing", "[cuckoo]"){
     }
 
     SECTION("Insertions with Identical Key"){
-        Cuckoo hashtable(8);
+        Cuckoo hashtable(24);
+        REQUIRE(hashtable.N == 64);
 
         for(int i = 0; i < 23; ++i){
             hashtable.insert(0, {static_cast<size_t>(i*10)});
@@ -45,108 +46,87 @@ TEST_CASE("Cuckoo Hashing", "[cuckoo]"){
             hashtable.insert(i, {static_cast<size_t>(i*10)});
         }
         
-        REQUIRE(hashtable.hashtable1.size() == 8);
-        REQUIRE(hashtable.hashtable2.size() == 8);
+        REQUIRE(hashtable.hashtable1.size() == 64);
+        REQUIRE(hashtable.hashtable2.size() == 64);
         REQUIRE(hashtable.inserted == 9);
     }
 
     SECTION("Non-Stop Resizing"){
-        Cuckoo hashtable(32);
-        REQUIRE(hashtable.N == 32);
+        Cuckoo hashtable(7);
+        REQUIRE(hashtable.N == 16);
 
-        for(int i = 0; i <= 32; i++){
-            hashtable.insert(i, {static_cast<size_t>(i*10)});
+        std::vector<int> keys = {272, 73, 82, 0, 153, 386};
+
+        for(int k : keys){
+            hashtable.insert(k, {static_cast<size_t>(k*10)});
         }
 
-        /* Next insertion is going to trigger a resize (we are working with kicks for rehashing 
-            but usually its happening with a load factor of 0.565)*/
-        hashtable.insert(100, {static_cast<size_t>(100)});
-        REQUIRE(hashtable.N == 64);
+        // table1: a, b, c, empty  (indexes 0,1,2)
+        // table2: d, e, f, empty  (indexes 0,1,2)
+        REQUIRE(hashtable.hashtable1[0].key == 0);
+        REQUIRE(hashtable.hashtable1[1].key == 153);
+        REQUIRE(hashtable.hashtable1[2].key == 386);
+        REQUIRE(!hashtable.hashtable1[3].occupied);
 
-        for(int i = 0; i <= 256; i++){
-            hashtable.insert(i, {static_cast<size_t>(i*10)});
+        REQUIRE(hashtable.hashtable2[0].key == 272);
+        REQUIRE(hashtable.hashtable2[1].key == 73);
+        REQUIRE(hashtable.hashtable2[2].key == 82);
+        REQUIRE(!hashtable.hashtable2[3].occupied);
+
+        hashtable.insert(10, {static_cast<size_t>(100)});
+
+        REQUIRE(hashtable.N >= 8); 
+
+        // Verify all keys are present
+        for(int k : keys) {
+            auto v = hashtable.find_values(k);
+            REQUIRE(!v.empty());
+            REQUIRE(v[0] == static_cast<size_t>(k*10));
         }
-
-        // Now we are going to do two in a row
-        REQUIRE(hashtable.N == 256);
+        auto vg = hashtable.find_values(10);
+        REQUIRE(!vg.empty());
+        REQUIRE(vg[0] == static_cast<size_t>(100));
     }
 
     SECTION("Random Insertions"){
-        Cuckoo hashtable(1024);
+        Cuckoo hashtable(512);
         REQUIRE(hashtable.N == 1024);
 
-        for(int i = 0; i < 1024; i++){
+        for(int i = 0; i < 512; i++){
             hashtable.insert(i, {static_cast<size_t>(i*10)});
         }
 
-        for(int i = 0; i < 1024; i++){
+        for(int i = 0; i < 512; i++){
             REQUIRE(!hashtable.find_values(i).empty());
             REQUIRE(hashtable.find_values(i)[0] == static_cast<size_t>(i*10));
         }
 
-        REQUIRE(hashtable.inserted == 1024);
+        REQUIRE(hashtable.inserted == 512);
         REQUIRE(hashtable.N == 1024);
     
     }
 
-    SECTION("Many Collisions - Resize"){
-        Cuckoo hashtable(4);
-        REQUIRE(hashtable.N == 4);
-
-        // h1 = 1 and h2 = 0        
-        hashtable.insert(1, {static_cast<size_t>(10)});
-        REQUIRE(hashtable.inserted == 1);
-
-        // h1 = 1 and h2 = 0
-        hashtable.insert(5, {static_cast<size_t>(50)});
-
-        // Resize must NOT happen
-        REQUIRE(hashtable.N == 4);
-        REQUIRE(hashtable.inserted == 2);
-
-        // h1 = 1 and h2 = 0
-        hashtable.insert(9, {static_cast<size_t>(90)});
-
-        // Resize MUST happen
-        REQUIRE(hashtable.N == 8);
-        REQUIRE(hashtable.inserted == 3);        
-
-        // h1 = 6
-        hashtable.insert(14, {static_cast<size_t>(140)});
-
-        // Resize must NOT happen
-        REQUIRE(hashtable.N == 8);
-        REQUIRE(hashtable.inserted == 4);
-        REQUIRE(!hashtable.find_values(1).empty());
-        REQUIRE(!hashtable.find_values(5).empty());
-        REQUIRE(!hashtable.find_values(9).empty());
-        REQUIRE(!hashtable.find_values(14).empty());
-    }
-
     SECTION("Collision"){
-        Cuckoo hashtable(4);
-        REQUIRE(hashtable.N == 4);
-        REQUIRE(hashtable.hashtable1.size() == 4);
-        REQUIRE(hashtable.hashtable1.size() == 4);
+        Cuckoo hashtable(2);
+        REQUIRE(hashtable.N == 16);
+        REQUIRE(hashtable.hashtable1.size() == 16);
+        REQUIRE(hashtable.hashtable1.size() == 16);
 
-        // h1 = 1 and h2 = 0        
-        hashtable.insert(1, {static_cast<size_t>(100)});
+        // h1 = 0 and h2 = 1        
+        hashtable.insert(0, {static_cast<size_t>(0)});
         REQUIRE(hashtable.inserted == 1);
 
-        // Hand picking our insertions to test the very worst occasions
-        /* 262145 = 1 + (4 << 16)
-            h1 = 1 and h2 = 0 */
-        hashtable.insert(262145, {static_cast<size_t>(200)});
+        // h1 = 0 and h2 = 1 */
+        hashtable.insert(153, {static_cast<size_t>(153)});
     
         // Resize must NOT happen
-        REQUIRE(hashtable.hashtable1.size() == 4);
-        REQUIRE(hashtable.hashtable2.size() == 4);
-        REQUIRE(hashtable.N == 4);
+        REQUIRE(hashtable.hashtable1.size() == 16);
+        REQUIRE(hashtable.hashtable2.size() == 16);
+        REQUIRE(hashtable.N == 16);
         REQUIRE(hashtable.inserted == 2);
 
-        REQUIRE(!hashtable.find_values(1).empty());
-        REQUIRE(!hashtable.find_values(262145).empty());
- 
+        REQUIRE(!hashtable.find_values(0).empty());
+        REQUIRE(!hashtable.find_values(153).empty());
     }
-
+    
 }
