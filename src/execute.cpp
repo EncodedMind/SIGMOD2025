@@ -1,12 +1,7 @@
 #include <hardware.h>
 #include <plan.h>
 #include <table.h>
-
-// Uncomment the algorithm to use for hashing (only one can be uncommented)
-#include <robinhood.h>
-// #include <hopscotch.h>
-// #include <cuckoo.h>
-
+#include <iostream>
 namespace Contest {
 
 using ExecuteResult = std::vector<std::vector<Data>>;
@@ -21,36 +16,53 @@ struct JoinAlgorithm {
     size_t                                           left_col, right_col;
     const std::vector<std::tuple<size_t, DataType>>& output_attrs;
 
+    size_t nextpow2(size_t n){
+        if(n <= 1) return 1;
+        n--;
+        n |= n >> 1;
+        n |= n >> 2;
+        n |= n >> 4;
+        n |= n >> 8;
+        n |= n >> 16;
+    #if ULONG_MAX > 0xFFFFFFFF
+        n |= n >> 32; // for 64 bit values
+    #endif
+        return n + 1;
+    }
+
     template <class T>
     auto run() {
         namespace views = ranges::views;
         
         size_t build_size = build_left ? left.size() : right.size();
-        
-        Hashalgorithm<T> table(build_size);
+        build_size = nextpow2(build_size) * 2; // next power of 2, doubled
+        std::unordered_map<T, std::vector<size_t>> hash_table;
+        hash_table.reserve(build_size);
 
         if (build_left) {
             for (auto&& [idx, record]: left | views::enumerate) {
                 std::visit(
-                    [&table, idx = idx](const auto& key) {
+                    [&hash_table, idx = idx](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            table.insert(key, {idx});
+                            if (auto itr = hash_table.find(key); itr == hash_table.end()) {
+                                hash_table.emplace(key, std::vector<size_t>(1, idx));
+                            } else {
+                                itr->second.push_back(idx);
+                            }
                         } else if constexpr (not std::is_same_v<Tk, std::monostate>) {
                             throw std::runtime_error("wrong type of field");
                         }
-                    }, 
-                record[left_col]);
-
+                    },
+                    record[left_col]);
             }
             for (auto& right_record: right) {
                 std::visit(
                     [&](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            auto vals = table.find_values(key);
-                            if(vals.size() > 0){
-                                for(auto left_idx : vals){
+                            if (auto itr = hash_table.find(key); itr != hash_table.end()) {
+                                for (auto left_idx: itr->second) {
                                     auto&             left_record = left[left_idx];
                                     std::vector<Data> new_record;
                                     new_record.reserve(output_attrs.size());
@@ -65,7 +77,6 @@ struct JoinAlgorithm {
                                     results.emplace_back(std::move(new_record));
                                 }
                             }
-
                         } else if constexpr (not std::is_same_v<Tk, std::monostate>) {
                             throw std::runtime_error("wrong type of field");
                         }
@@ -75,10 +86,14 @@ struct JoinAlgorithm {
         } else {
             for (auto&& [idx, record]: right | views::enumerate) {
                 std::visit(
-                    [&table, idx = idx](const auto& key) {
+                    [&hash_table, idx = idx](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            table.insert(key, {idx});
+                            if (auto itr = hash_table.find(key); itr == hash_table.end()) {
+                                hash_table.emplace(key, std::vector<size_t>(1, idx));
+                            } else {
+                                itr->second.push_back(idx);
+                            }
                         } else if constexpr (not std::is_same_v<Tk, std::monostate>) {
                             throw std::runtime_error("wrong type of field");
                         }
@@ -90,9 +105,8 @@ struct JoinAlgorithm {
                     [&](const auto& key) {
                         using Tk = std::decay_t<decltype(key)>;
                         if constexpr (std::is_same_v<Tk, T>) {
-                            auto vals = table.find_values(key);
-                            if(vals.size() > 0){
-                                for(auto right_idx : vals){
+                            if (auto itr = hash_table.find(key); itr != hash_table.end()) {
+                                for (auto right_idx: itr->second) {
                                     auto&             right_record = right[right_idx];
                                     std::vector<Data> new_record;
                                     new_record.reserve(output_attrs.size());
@@ -113,7 +127,7 @@ struct JoinAlgorithm {
                     },
                     left_record[left_col]);
             }
-        }
+        }       
     }
 };
 
