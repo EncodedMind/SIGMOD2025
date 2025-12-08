@@ -150,8 +150,8 @@ ExecuteResult execute_impl(const Plan& plan, size_t node_idx) {
     auto& node = plan.nodes[node_idx];
     return std::visit(
         [&](const auto& value) {
-            using int32_t = std::decay_t<decltype(value)>;
-            if constexpr (std::is_same_v<int32_t, JoinNode>) {
+            using T = std::decay_t<decltype(value)>;
+            if constexpr (std::is_same_v<T, JoinNode>) {
                 return execute_hash_join(plan, value, node.output_attrs);
             } else {
                 return execute_scan(plan, value, node.output_attrs);

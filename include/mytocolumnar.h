@@ -33,18 +33,25 @@ namespace mytocolumnar{
         std::string result;
         uint32_t current_page_id = page_id;
 
-        do{
-            const uint16_t length = num_values;
-            const char* start = reinterpret_cast<const char*>(page + 4);
-            result.append(start, length);
+        // Process first page (0xffff)
+        page = column.pages[current_page_id]->data;
+        uint16_t length = *reinterpret_cast<const uint16_t*>(page + 2);
+        const char* start = reinterpret_cast<const char*>(page + 4);
+        result.append(start, length);
+        current_page_id++;
 
-            current_page_id++;
-            if(current_page_id >= column.pages.size()) break;
+        // Process continuation pages (0xfffe) until we hit something else
+        while(current_page_id < column.pages.size()){
             page = column.pages[current_page_id]->data;
             num_rows = *reinterpret_cast<const uint16_t*>(page);
-
-        } while(num_rows == 0xfffe);
-
+            
+            if (num_rows != 0xfffe) break;  // Stop if not a continuation page
+            
+            length = *reinterpret_cast<const uint16_t*>(page + 2);
+            start = reinterpret_cast<const char*>(page + 4);
+            result.append(start, length);
+            current_page_id++;
+        }
         return result;
     }
 
