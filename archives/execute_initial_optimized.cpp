@@ -16,10 +16,29 @@ struct JoinAlgorithm {
     size_t                                           left_col, right_col;
     const std::vector<std::tuple<size_t, DataType>>& output_attrs;
 
+    size_t nextpow2(size_t n){
+        if(n <= 1) return 1;
+        n--;
+        n |= n >> 1;
+        n |= n >> 2;
+        n |= n >> 4;
+        n |= n >> 8;
+        n |= n >> 16;
+    #if ULONG_MAX > 0xFFFFFFFF
+        n |= n >> 32; // for 64 bit values
+    #endif
+        return n + 1;
+    }
+
     template <class T>
     auto run() {
         namespace views = ranges::views;
+        
+        size_t build_size = build_left ? left.size() : right.size();
+        build_size = nextpow2(build_size) * 2; // next power of 2, doubled
         std::unordered_map<T, std::vector<size_t>> hash_table;
+        hash_table.reserve(build_size);
+
         if (build_left) {
             for (auto&& [idx, record]: left | views::enumerate) {
                 std::visit(
