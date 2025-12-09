@@ -1,4 +1,4 @@
-// Late materialization version
+// Columnar store joins version
 
 #include <hardware.h>
 #include <plan.h>
@@ -6,12 +6,13 @@
 #include <iostream>
 
 #include <value_t.h>
+#include <column_t.h>
 #include <mycopyscan.h>
-#include <mytocolumnar.h>
+#include <execute_root.h>
 
 namespace Contest {
 
-using ExecuteResult = std::vector<std::vector<valuet::value_t>>;
+using ExecuteResult = std::vector<columnt::column_t>;
 
 ExecuteResult execute_impl(const Plan& plan, size_t node_idx);
 
@@ -39,73 +40,65 @@ struct JoinAlgorithm {
 
     auto run() {
         namespace views = ranges::views;
-        
-        size_t build_size = build_left ? left.size() : right.size();
+
+        size_t build_size = build_left ? left[left_col].size() : right[right_col].size();
         build_size = nextpow2(build_size) * 2; // next power of 2, doubled
         std::unordered_map<int32_t, std::vector<size_t>> hash_table;
         hash_table.reserve(build_size);
 
         if (build_left) {
-            for(auto&& [idx, record]: left | views::enumerate){
-                const auto& key = record[left_col];
+            for(size_t row_idx = 0; row_idx < left[left_col].size(); ++row_idx){
+                const auto& key = left[left_col][row_idx];
                 if(key.is_null_int32()) continue;
 
                 if (auto itr = hash_table.find(key.intvalue); itr == hash_table.end()) {
-                    hash_table.emplace(key.intvalue, std::vector<size_t>(1, idx));
+                    hash_table.emplace(key.intvalue, std::vector<size_t>(1, row_idx));
                 } else {
-                    itr->second.push_back(idx);
+                    itr->second.push_back(row_idx);
                 }
             }
-            for(auto& right_record: right){
-                const auto& key = right_record[right_col];
+            for(size_t right_idx = 0; right_idx < right[right_col].size(); ++right_idx){
+                const auto& key = right[right_col][right_idx];
                 if(key.is_null_int32()) continue;
 
                 if (auto itr = hash_table.find(key.intvalue); itr != hash_table.end()) {
                     for (auto left_idx: itr->second) {
-                        auto& left_record = left[left_idx];
-                        std::vector<valuet::value_t> new_record;
-                        new_record.reserve(output_attrs.size());
-                        for (auto [col_idx, _]: output_attrs) {
-                            if (col_idx < left_record.size()) {
-                                new_record.emplace_back(left_record[col_idx]);
+                        for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                            auto [col_idx, _] = output_attrs[out_idx];
+                            if (col_idx < left.size()) {
+                                results[out_idx].push_back(left[col_idx][left_idx]);
                             } else {
-                                new_record.emplace_back(
-                                    right_record[col_idx - left_record.size()]);
+                                results[out_idx].push_back(right[col_idx - left.size()][right_idx]);
                             }
                         }
-                        results.emplace_back(std::move(new_record));
                     }
                 }
             }
         } else {
-            for(auto&& [idx, record]: right | views::enumerate){
-                const auto& key = record[right_col];
+            for(size_t row_idx = 0; row_idx < right[right_col].size(); ++row_idx){
+                const auto& key = right[right_col][row_idx];
                 if(key.is_null_int32()) continue;
 
                 if (auto itr = hash_table.find(key.intvalue); itr == hash_table.end()) {
-                    hash_table.emplace(key.intvalue, std::vector<size_t>(1, idx));
+                    hash_table.emplace(key.intvalue, std::vector<size_t>(1, row_idx));
                 } else {
-                    itr->second.push_back(idx);
+                    itr->second.push_back(row_idx);
                 }
-            }
-            for (auto& left_record: left) {
-                const auto& key = left_record[left_col];
+            }            
+            for (size_t left_idx = 0; left_idx < left[left_col].size(); ++left_idx) {
+                const auto& key = left[left_col][left_idx];
                 if(key.is_null_int32()) continue;
 
                 if (auto itr = hash_table.find(key.intvalue); itr != hash_table.end()) {
                     for (auto right_idx: itr->second) {
-                        auto& right_record = right[right_idx];
-                        std::vector<valuet::value_t> new_record;
-                        new_record.reserve(output_attrs.size());
-                        for (auto [col_idx, _]: output_attrs) {
-                            if (col_idx < left_record.size()) {
-                                new_record.emplace_back(left_record[col_idx]);
+                        for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                            auto [col_idx, _] = output_attrs[out_idx];
+                            if (col_idx < left.size()) {
+                                results[out_idx].push_back(left[col_idx][left_idx]);
                             } else {
-                                new_record.emplace_back(
-                                    right_record[col_idx - left_record.size()]);
+                                results[out_idx].push_back(right[col_idx - left.size()][right_idx]);
                             }
                         }
-                        results.emplace_back(std::move(new_record));
                     }
                 }
             }
@@ -124,7 +117,7 @@ ExecuteResult execute_hash_join(const Plan&          plan,
     auto&                          right_types = right_node.output_attrs;
     auto                           left        = execute_impl(plan, left_idx);
     auto                           right       = execute_impl(plan, right_idx);
-    std::vector<std::vector<valuet::value_t>> results;
+    ExecuteResult results(output_attrs.size());
 
     JoinAlgorithm join_algorithm{.build_left = join.build_left,
         .left                                = left,
@@ -161,8 +154,7 @@ ExecuteResult execute_impl(const Plan& plan, size_t node_idx) {
 }
 
 ColumnarTable execute(const Plan& plan, [[maybe_unused]] void* context) {
-    auto ret = execute_impl(plan, plan.root);
-    return mytocolumnar::to_columnar_value_t(ret, plan);
+    return execute_impl_root(plan, plan.root);
 }
 
 void* build_context() {

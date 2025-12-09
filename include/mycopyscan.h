@@ -6,6 +6,7 @@
 #include <plan.h>
 #include <table.h>
 #include <value_t.h>
+#include <column_t.h>
 
 namespace mycopyscan{
 
@@ -15,10 +16,11 @@ namespace mycopyscan{
         return bitmap[byte_idx] & (1u << bit);
     }
 
-    std::vector<std::vector<valuet::value_t>> copy_scan_value_t(const ColumnarTable& table,
+    std::vector<columnt::column_t> copy_scan_value_t(const ColumnarTable& table,
         const std::vector<std::tuple<size_t, DataType>>& output_attrs, uint8_t table_id){
         namespace views = ranges::views;
-        std::vector<std::vector<valuet::value_t>> results(table.num_rows, std::vector<valuet::value_t>(output_attrs.size(), valuet::value_t()));
+        std::vector<columnt::column_t> results;
+        results.resize(output_attrs.size());
         std::vector<DataType> types(table.columns.size());
 
         auto task = [&](size_t begin, size_t end) {
@@ -26,7 +28,6 @@ namespace mycopyscan{
                 size_t in_col_idx = std::get<0>(output_attrs[column_idx]);
                 auto& column = table.columns[in_col_idx];
                 types[in_col_idx] = column.type;
-                size_t row_idx = 0;
                 uint32_t page_id = 0;
 
                 for (auto* page: column.pages | views::transform([](auto* page) { return page->data; })) {
@@ -42,13 +43,10 @@ namespace mycopyscan{
                         for (uint16_t i = 0; i < num_rows; ++i) {
                             if (get_bitmap(bitmap, i)) {
                                 int32_t value = data_begin[data_idx++];
-                                if (row_idx >= table.num_rows) {
-                                    throw std::runtime_error("row_idx");
-                                }
-                                results[row_idx++][column_idx] = valuet::value_t(value);
+                                results[column_idx].push_back(valuet::value_t(value));
                             } else {
                                 // mark it as null and store to value_t
-                                results[row_idx++][column_idx] = valuet::value_t::null_int32();
+                                results[column_idx].push_back(valuet::value_t::null_int32());
                             }
                         }
                         break;
@@ -58,7 +56,7 @@ namespace mycopyscan{
                         auto num_rows = *reinterpret_cast<uint16_t*>(page);
                         if (num_rows == 0xffff) { // long string page
                             // we don't need offset index
-                            results[row_idx++][column_idx] = valuet::value_t(valuet::NewString(table_id, static_cast<uint8_t>(in_col_idx), page_id, 0)); // add the value_t
+                            results[column_idx].push_back(valuet::value_t(valuet::NewString(table_id, static_cast<uint8_t>(in_col_idx), page_id, 0))); // add the value_t
                         } else if(num_rows == 0xfffe){
                             // Long string continuation page - skip, will be handled during materialization
                         } else {
@@ -68,11 +66,11 @@ namespace mycopyscan{
 
                             for (uint16_t i = 0; i < num_rows; ++i) {
                                 if (get_bitmap(bitmap, i)) {
-                                    results[row_idx++][column_idx] = valuet::value_t(valuet::NewString(table_id, static_cast<uint8_t>(in_col_idx), page_id, data_idx)); // add the value_t
+                                    results[column_idx].push_back(valuet::value_t(valuet::NewString(table_id, static_cast<uint8_t>(in_col_idx), page_id, data_idx))); // add the value_t
                                     data_idx++;
                                 } else {
                                     // mark it as null and store to value_t
-                                    results[row_idx++][column_idx] = valuet::value_t::null_string();
+                                    results[column_idx].push_back(valuet::value_t::null_string());
                                 }
                             }
                         }
