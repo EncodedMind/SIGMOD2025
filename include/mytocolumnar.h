@@ -6,6 +6,7 @@
 #include <plan.h>
 #include <table.h>
 #include <value_t.h>
+#include <column_t.h>
 
 namespace mytocolumnar{
 
@@ -73,7 +74,7 @@ namespace mytocolumnar{
         bitmap[byte_idx] &= ~(1u << bit);
     }
 
-    ColumnarTable to_columnar_value_t(const std::vector<std::vector<valuet::value_t>>& table, const Plan& plan){
+    ColumnarTable to_columnar_value_t(const std::vector<columnt::column_t>& table, const Plan& plan){
         const std::vector<std::tuple<size_t, DataType>>& output_attrs = plan.nodes[plan.root].output_attrs;
         namespace views  = ranges::views;
         ColumnarTable ret;
