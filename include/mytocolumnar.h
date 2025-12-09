@@ -78,13 +78,14 @@ namespace mytocolumnar{
         const std::vector<std::tuple<size_t, DataType>>& output_attrs = plan.nodes[plan.root].output_attrs;
         namespace views  = ranges::views;
         ColumnarTable ret;
-        ret.num_rows = table.size();
-        for (const auto& [col_idx, attr]: output_attrs | views::enumerate) {
+        ret.num_rows = table.empty() ? 0 : table[0].size();
+        for (const auto& [out_idx, attr]: output_attrs | views::enumerate) {
             const auto& [table_col_idx, data_type] = attr;
+            (void)table_col_idx; // to silence the unused variable warning
+
             ret.columns.emplace_back(data_type);
             auto& column = ret.columns.back();
             switch (data_type) {
-
 
             case DataType::INT32: {
                 uint16_t             num_rows = 0;
@@ -102,8 +103,10 @@ namespace mytocolumnar{
                     data.clear();
                     bitmap.clear();
                 };
-                for (auto& record: table) {
-                    const valuet::value_t& value = record[col_idx];
+
+                if(table.size() <= out_idx) continue;
+                for (size_t row_idx = 0; row_idx < table[out_idx].size(); ++row_idx) {
+                    const valuet::value_t& value = table[out_idx][row_idx];
 
                     if(value.is_null_int32()){
                         if (4 + (data.size()) * 4 + (num_rows / 8 + 1) > PAGE_SIZE) {
@@ -167,8 +170,9 @@ namespace mytocolumnar{
                     bitmap.clear();
                 };
 
-                for (auto& record: table) {
-                    const valuet::value_t& value = record[col_idx];
+                if (table.size() <= out_idx) continue;
+                for (size_t row_idx = 0; row_idx < table[out_idx].size(); ++row_idx) {
+                    const valuet::value_t& value = table[out_idx][row_idx];
 
                     if(value.is_null_string()){
                         if (4 + offsets.size() * 2 + data.size() + (num_rows / 8 + 1) > PAGE_SIZE) {

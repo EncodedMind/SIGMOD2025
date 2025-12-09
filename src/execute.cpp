@@ -40,15 +40,15 @@ struct JoinAlgorithm {
 
     auto run() {
         namespace views = ranges::views;
-        
-        size_t build_size = build_left ? left.size() : right.size();
+
+        size_t build_size = build_left ? left[left_col].size() : right[right_col].size();
         build_size = nextpow2(build_size) * 2; // next power of 2, doubled
         std::unordered_map<int32_t, std::vector<size_t>> hash_table;
         hash_table.reserve(build_size);
 
         if (build_left) {
-            for(size_t row_idx = 0; row_idx < left[left_col].size(); ++row_idx){ // TODO: size() method for column_t
-                const auto& key = left[left_col][row_idx]; // TODO: operator[] for column_t
+            for(size_t row_idx = 0; row_idx < left[left_col].size(); ++row_idx){
+                const auto& key = left[left_col][row_idx];
                 if(key.is_null_int32()) continue;
 
                 if (auto itr = hash_table.find(key.intvalue); itr == hash_table.end()) {
@@ -63,17 +63,14 @@ struct JoinAlgorithm {
 
                 if (auto itr = hash_table.find(key.intvalue); itr != hash_table.end()) {
                     for (auto left_idx: itr->second) {
-                        columnt::column_t new_record;
-                        new_record.reserve(output_attrs.size()); // TODO: reserve method for column_t
-
-                        for (auto [col_idx, _]: output_attrs) {
+                        for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                            auto [col_idx, _] = output_attrs[out_idx];
                             if (col_idx < left.size()) {
-                                new_record.push_back(left[col_idx][left_idx]);
+                                results[out_idx].push_back(left[col_idx][left_idx]);
                             } else {
-                                new_record.push_back(right[col_idx - left.size()][right_idx]);
+                                results[out_idx].push_back(right[col_idx - left.size()][right_idx]);
                             }
                         }
-                        results.emplace_back(std::move(new_record));
                     }
                 }
             }
@@ -94,17 +91,14 @@ struct JoinAlgorithm {
 
                 if (auto itr = hash_table.find(key.intvalue); itr != hash_table.end()) {
                     for (auto right_idx: itr->second) {
-                        columnt::column_t new_record;
-                        new_record.reserve(output_attrs.size());
-
-                        for (auto [col_idx, _]: output_attrs) {
+                        for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                            auto [col_idx, _] = output_attrs[out_idx];
                             if (col_idx < left.size()) {
-                                new_record.push_back(left[col_idx][left_idx]);
+                                results[out_idx].push_back(left[col_idx][left_idx]);
                             } else {
-                                new_record.push_back(right[col_idx - left.size()][right_idx]);
+                                results[out_idx].push_back(right[col_idx - left.size()][right_idx]);
                             }
                         }
-                        results.emplace_back(std::move(new_record));
                     }
                 }
             }
@@ -123,7 +117,7 @@ ExecuteResult execute_hash_join(const Plan&          plan,
     auto&                          right_types = right_node.output_attrs;
     auto                           left        = execute_impl(plan, left_idx);
     auto                           right       = execute_impl(plan, right_idx);
-    ExecuteResult results;
+    ExecuteResult results(output_attrs.size());
 
     JoinAlgorithm join_algorithm{.build_left = join.build_left,
         .left                                = left,

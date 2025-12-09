@@ -19,7 +19,8 @@ namespace mycopyscan{
     std::vector<columnt::column_t> copy_scan_value_t(const ColumnarTable& table,
         const std::vector<std::tuple<size_t, DataType>>& output_attrs, uint8_t table_id){
         namespace views = ranges::views;
-        std::vector<columnt::column_t> results(output_attrs.size(), columnt::column_t()); // TODO: column_t default constructor
+        std::vector<columnt::column_t> results;
+        results.resize(output_attrs.size());
         std::vector<DataType> types(table.columns.size());
 
         auto task = [&](size_t begin, size_t end) {
@@ -42,7 +43,7 @@ namespace mycopyscan{
                         for (uint16_t i = 0; i < num_rows; ++i) {
                             if (get_bitmap(bitmap, i)) {
                                 int32_t value = data_begin[data_idx++];
-                                results[column_idx].push_back(valuet::value_t(value)); // TODO: results push_back value_t
+                                results[column_idx].push_back(valuet::value_t(value));
                             } else {
                                 // mark it as null and store to value_t
                                 results[column_idx].push_back(valuet::value_t::null_int32());
