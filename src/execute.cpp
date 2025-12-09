@@ -8,7 +8,7 @@
 #include <value_t.h>
 #include <column_t.h>
 #include <mycopyscan.h>
-#include <mytocolumnar.h>
+#include <execute_root.h>
 
 namespace Contest {
 
@@ -154,8 +154,7 @@ ExecuteResult execute_impl(const Plan& plan, size_t node_idx) {
 }
 
 ColumnarTable execute(const Plan& plan, [[maybe_unused]] void* context) {
-    auto ret = execute_impl(plan, plan.root);
-    return mytocolumnar::to_columnar_value_t(ret, plan);
+    return execute_impl_root(plan, plan.root);
 }
 
 void* build_context() {
