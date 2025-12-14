@@ -9,15 +9,15 @@ This project is based on the [SIGMOD 2025 programming contest](https://sigmod-co
 
 | Name                 | Student ID     |       Academic email      | GitHub Username   |
 | -------------------- | -------------- | ------------------------- |------------------ |
-| Andreakis Dimitrios  | 1115202300008  | sdi2300008@di.uoa.gr    | EncodedMind       |
-| Vasileiou Evaggelos  | 1115201900309  | sdi1900309@di.uoa.gr    | VangelisVas       |
+| Andreakis Dimitrios  | 1115202300008  | sdi2300008@di.uoa.gr      | EncodedMind       |
+| Vasileiou Evaggelos  | 1115201900309  | sdi1900309@di.uoa.gr      | VangelisVas       |
 | Kolokouras Apostolos | 1115202100259  | sdi2100259@di.uoa.gr      | TolisKlk          |
 
 ---
 
 ## File Structure
 
-****Essential files only***
+****Essential files only*** 
 ```bash
 k23a-2025-d1-ctrl-s-our-souls/
 ├── src/
