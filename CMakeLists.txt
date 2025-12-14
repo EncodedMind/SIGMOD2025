@@ -98,6 +98,7 @@ add_executable(hopscotch_tests  tests/hopscotch_tests.cpp)
 add_executable(robin_tests tests/robin_tests.cpp)
 add_executable(hash_tests tests/hash_tests.cpp)
 add_executable(opt_tests tests/opt_tests.cpp)
+target_sources(opt_tests PRIVATE ${SIGMODPC_SRC})
 
 # For all executables
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
