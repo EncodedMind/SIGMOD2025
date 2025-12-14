@@ -97,6 +97,7 @@ add_executable(cuckoo_tests  tests/cuckoo_tests.cpp)
 add_executable(hopscotch_tests  tests/hopscotch_tests.cpp)
 add_executable(robin_tests tests/robin_tests.cpp)
 add_executable(hash_tests tests/hash_tests.cpp)
+add_executable(opt_tests tests/opt_tests.cpp)
 
 # For all executables
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -107,6 +108,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_definitions(hopscotch_tests PRIVATE _CRT_SECURE_NO_WARNINGS)
     target_compile_definitions(robin_tests PRIVATE _CRT_SECURE_NO_WARNINGS) 
     target_compile_definitions(hash_tests PRIVATE _CRT_SECURE_NO_WARNINGS) 
+    target_compile_definitions(opt_tests PRIVATE _CRT_SECURE_NO_WARNINGS) 
 endif()
 
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -128,6 +130,7 @@ target_link_libraries(cuckoo_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMa
 target_link_libraries(hopscotch_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
 target_link_libraries(robin_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
 target_link_libraries(hash_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
+target_link_libraries(opt_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
 
 target_include_directories(run PRIVATE include)
 target_include_directories(build_database PRIVATE include)
@@ -136,3 +139,4 @@ target_include_directories(cuckoo_tests PRIVATE include)
 target_include_directories(hopscotch_tests PRIVATE include)
 target_include_directories(robin_tests PRIVATE include)
 target_include_directories(hash_tests PRIVATE include)
+target_include_directories(opt_tests PRIVATE include)
