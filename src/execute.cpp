@@ -1,4 +1,4 @@
-// Columnar store joins version
+// Unchained hash version
 
 #include <hardware.h>
 #include <plan.h>
@@ -9,6 +9,8 @@
 #include <column_t.h>
 #include <mycopyscan.h>
 #include <execute_root.h>
+
+#include <unchained_table.h>
 
 namespace Contest {
 
@@ -24,52 +26,38 @@ struct JoinAlgorithm {
     size_t                                           left_col, right_col;
     const std::vector<std::tuple<size_t, DataType>>& output_attrs;
 
-    size_t nextpow2(size_t n){
-        if(n <= 1) return 1;
-        n--;
-        n |= n >> 1;
-        n |= n >> 2;
-        n |= n >> 4;
-        n |= n >> 8;
-        n |= n >> 16;
-    #if ULONG_MAX > 0xFFFFFFFF
-        n |= n >> 32; // for 64 bit values
-    #endif
-        return n + 1;
-    }
-
     auto run() {
         namespace views = ranges::views;
 
         size_t build_size = build_left ? left[left_col].size() : right[right_col].size();
-        build_size = nextpow2(build_size) * 2; // next power of 2, doubled
-        std::unordered_map<int32_t, std::vector<size_t>> hash_table;
+        UnchainedHashTable hash_table;
         hash_table.reserve(build_size);
 
         if (build_left) {
             for(size_t row_idx = 0; row_idx < left[left_col].size(); ++row_idx){
                 const auto& key = left[left_col][row_idx];
                 if(key.is_null_int32()) continue;
-
-                if (auto itr = hash_table.find(key.intvalue); itr == hash_table.end()) {
-                    hash_table.emplace(key.intvalue, std::vector<size_t>(1, row_idx));
-                } else {
-                    itr->second.push_back(row_idx);
-                }
+                hash_table.insert(key.intvalue, row_idx);
             }
+            hash_table.finalize();
+
             for(size_t right_idx = 0; right_idx < right[right_col].size(); ++right_idx){
                 const auto& key = right[right_col][right_idx];
                 if(key.is_null_int32()) continue;
 
-                if (auto itr = hash_table.find(key.intvalue); itr != hash_table.end()) {
-                    for (auto left_idx: itr->second) {
-                        for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
-                            auto [col_idx, _] = output_attrs[out_idx];
-                            if (col_idx < left.size()) {
-                                results[out_idx].push_back(left[col_idx][left_idx]);
-                            } else {
-                                results[out_idx].push_back(right[col_idx - left.size()][right_idx]);
-                            }
+                size_t len = 0;
+                const HashEntry* entries = hash_table.find_range(key.intvalue, len);
+                if (!entries || len == 0) continue;
+
+                for (size_t i = 0; i < len; ++i) {
+                    if (entries[i].key != key.intvalue) continue; // Bloom may yield false positives
+                    size_t left_idx = entries[i].row_idx;
+                    for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                        auto [col_idx, _] = output_attrs[out_idx];
+                        if (col_idx < left.size()) {
+                            results[out_idx].push_back(left[col_idx][left_idx]);
+                        } else {
+                            results[out_idx].push_back(right[col_idx - left.size()][right_idx]);
                         }
                     }
                 }
@@ -78,31 +66,32 @@ struct JoinAlgorithm {
             for(size_t row_idx = 0; row_idx < right[right_col].size(); ++row_idx){
                 const auto& key = right[right_col][row_idx];
                 if(key.is_null_int32()) continue;
+                hash_table.insert(key.intvalue, row_idx);
+            }
+            hash_table.finalize();
 
-                if (auto itr = hash_table.find(key.intvalue); itr == hash_table.end()) {
-                    hash_table.emplace(key.intvalue, std::vector<size_t>(1, row_idx));
-                } else {
-                    itr->second.push_back(row_idx);
-                }
-            }            
             for (size_t left_idx = 0; left_idx < left[left_col].size(); ++left_idx) {
                 const auto& key = left[left_col][left_idx];
                 if(key.is_null_int32()) continue;
 
-                if (auto itr = hash_table.find(key.intvalue); itr != hash_table.end()) {
-                    for (auto right_idx: itr->second) {
-                        for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
-                            auto [col_idx, _] = output_attrs[out_idx];
-                            if (col_idx < left.size()) {
-                                results[out_idx].push_back(left[col_idx][left_idx]);
-                            } else {
-                                results[out_idx].push_back(right[col_idx - left.size()][right_idx]);
-                            }
+                size_t len = 0;
+                const HashEntry* entries = hash_table.find_range(key.intvalue, len);
+                if (!entries || len == 0) continue;
+                
+                for (size_t i = 0; i < len; ++i) {
+                    if (entries[i].key != key.intvalue) continue;
+                    size_t right_idx = entries[i].row_idx;
+                    for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                        auto [col_idx, _] = output_attrs[out_idx];
+                        if (col_idx < left.size()) {
+                            results[out_idx].push_back(left[col_idx][left_idx]);
+                        } else {
+                            results[out_idx].push_back(right[col_idx - left.size()][right_idx]);
                         }
                     }
                 }
             }
-        }       
+        }
     }
 };
 
@@ -119,7 +108,10 @@ ExecuteResult execute_hash_join(const Plan&          plan,
     auto                           right       = execute_impl(plan, right_idx);
     ExecuteResult results(output_attrs.size());
 
-    JoinAlgorithm join_algorithm{.build_left = join.build_left,
+    // Compute build_left based on actual cardinalities (paper recommendation)
+    bool build_left = left[join.left_attr].size() <= right[join.right_attr].size();
+
+    JoinAlgorithm join_algorithm{.build_left = build_left,
         .left                                = left,
         .right                               = right,
         .results                             = results,
