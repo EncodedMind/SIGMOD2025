@@ -2,46 +2,40 @@
 
 This project is based on the [SIGMOD 2025 programming contest](https://sigmod-contest-2025.github.io). The task involves optimizing the join pipeline by implementing an efficient join algorithm to reduce execution time.
 
-## Project Description 
+## Project Description
 
-In the second part of the assignment, we implemented the join operator by developing three optimization techniques. In the baseline solution, strings are fully materialized and copied early during query execution, causing unnecessary data movement. Moreover, intermediate join results are currently materialized in a row-store format, preventing us from benefiting from column-store cache locality and performance. Last, the current hash join implementation does not handle skewed or duplicate-heavy data efficiently, limiting performance for selective joins. To address these issues, we implemented the following optimization strategies:
-
-1.1. Late Materialization for strings  
-1.2. Eliminating Intermediate Results at the Root Join  
-2. Column Store  
-3. Unchained Hashing  
+In the first part of the assignment, we implemented the join operator by developing three different versions of the Hash Join algorithm. In the baseline solution, the hash table uses `std::unordered_map` from the C++ STL. We implemented three alternative hash-based join strategies to improve performance:
+1. Robin Hood Hashing
+2. Cuckoo Hashing
+3. Hopscotch Hashing
 
 ## Team Information
 
 **Team Name:** CTRL+S our lives
 
-| Name                 | Student ID     |       Academic email      | GitHub Username   |
-| -------------------- | -------------- | ------------------------- |------------------ |
-| Andreakis Dimitrios  | 1115202300008  | sdi2300008@di.uoa.gr      | EncodedMind       |
-| Vasileiou Evaggelos  | 1115201900309  | sdi1900309@di.uoa.gr      | VangelisVas       |
-| Kolokouras Apostolos | 1115202100259  | sdi2100259@di.uoa.gr      | TolisKlk          |
+| Name                 | Student ID     | GitHub Username |
+| -------------------- | -------------- | --------------- |
+| Andreakis Dimitrios  | 1115202300008  | EncodedMind     |
+| Vasileiou Evaggelos  | 1115201900309  | VangelisVas     |
+| Kolokouras Apostolos | 1115202100259  | TolisKlk        |
 
 ---
 
 ## File Structure
-
 *\*Only the most essential files\**
 ```bash
 k23a-2025-d1-ctrl-s-our-souls/
 ├── src/
 │   ├── execute.cpp
-│   ├── unchained_hashtable.cpp
 ├── include/
-│   ├── unchained_hashtable.h
-│   ├── execute_root.h
-│   ├── value_t.h
-│   ├── column_t.h
-│   ├── mycopyscan.h
-│   ├── mytocolumnar.h
+│   ├── robinhood.h
+│   ├── cuckoo.h
+│   ├── hopscotch.h
 ├── tests/
-│   └── opt_tests.cpp
+│   └── hash_tests.cpp
 ├── job/
 ├── CMakeLists.txt
+├── Makefile
 └── README.md
 ```
 
@@ -124,6 +118,25 @@ cmake --build build -- -j $(nproc) fast
 
 Code is compiled with Clang 18.
 
+**Make sure that only ONE header file is uncommented on the top of the `execute.cpp` file.** *Default is Robin Hood.*
+
+---
+
+## Design Choices
+
+### Rehash Logic
+
+* Robin Hood: Robin Hood does not need rehash logic, because we are allocating a hash table that is always large enough.
+
+* Cuckoo: We detect cycles by counting the number of elements that have been moved. If we reach the total number of elements in the array, then a cycle must necessarily exist.
+
+* Hopscotch: We rehash when the neighbourhood of a key is full or when there is no availabe slot to move the "empty slot". The size of the neighborhood (H) was determined based on the original paper, which suggests H=32 or H=64. H=32 provided a slightly better average (-700ms).
+
+### Hash functions
+
+* For hashing functions, we implemented **CRC** and **Fibonacci Constant** for performance testing, which made the execution faster.
+* The size of each hashtable is the smallest power of 2 equal or larger than the build size. This allows us to do faster `%N` operations. We doubled this number to leave a larger margin and avoid collisions, which skyrocketed the total performance.
+
 ---
 
 ## Performance Evaluation
@@ -136,13 +149,13 @@ We decided **not** to display each individual query time. Instead, we present th
 
 | Algorithm         | Run 1 (ms)    | Run 2 (ms)    | Run 3 (ms)    | Run 4 (ms)    | Run 5 (ms)    | **Average (ms)**    |
 | ----------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------------- |
-| Base Solution         | 170014    | 169454        | 169220        | 168890        | 168634        | 169242              |
-| Late Materialization  | 105971    | 105489        | 104977        | 105581        | 105710        | 105546              |                
-| Column Store          | 62120     | 62255         | 62023         | 62236         | 62088         | 62144               |
-| No root IR            | 60325     | 57856         | 55908         | 60855         | 59563         | 58901               |
-| Unchained table       | 46276     | 46231         | 46182         | 46145         | 46246         | 46216               |
+| Unordered map     | 163384        | 159158        | 159332        | 158695        | 159671        | 160048              |
+| Robin Hood        | 183586        | 182904        | 182423        | 184060        | 186735        | 183942              |
+| Cuckoo            | 178391        | 178893        | 178260        | 178087        | 177715        | 178869              |
+| Hopscotch         | 174988        | 175875        | 173503        | 172534        | 172459        | 173872              |
 
-- Performance results show that the unchained table, as described in the paper, achieves the fastest execution, being more than 4× faster than the base solution. All other optimizations also have a significant impact on runtime, with the column store in particular providing a large performance improvement.
+- The performance comparison shows that `std::unordered_map` was the fastest implementation overall, achieving the lowest average runtime (≈160 seconds).
+- Among the custom algorithms, Hopscotch hashing performed the best, followed by Cuckoo, while Robin Hood hashing was a little slower.
 
 ---
 
@@ -150,9 +163,9 @@ We decided **not** to display each individual query time. Instead, we present th
 
 | Member             | Contributions                                                                                                                                                                                             |
 | -----------------  | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **D. Andreakis**   |  • Implemented Late Materialization and Column Store optimization techniques. <br> • Co-implemented Unchained Hashtable <br> • Set up continuous integration through GitHub Actions. <br>• Executed performance testing.|
-| **Ev. Vasileiou**  | • Implemented Unit-Tests for Column Store, Late Materialization. <br> • Co-implemented Unchained table Unit-Test. |
-| **A. Kolokouras** | • Co-implemented Unchained Hashtable. <br> • Co-implemented Unchained table Unit-Test. <br> • Utilized profiling tools for optimization of execution time.|
+| **D. Andreakis**   | • Implemented all three algorithms and integrated them into the main project.<br>• Set up continuous integration through GitHub Actions.<br>• Prepared the README.md.<br>• Executed performance testing.  |
+| **Ev. Vasileiou**  | • Created the Makefile to simplify compilation.<br>• Implemented the unit tests for Robin Hood and Cuckoo.                                                                                                |
+| **Ap. Kolokouras** | • Proposed integrating all components into a single executable with modular header files.<br>• Implemented the unit tests for Hopscotch.                                                                  |
 
 ---
 
@@ -160,6 +173,8 @@ We decided **not** to display each individual query time. Instead, we present th
 
 All performance tests were conducted on the following system:
 
-- **Processor:** AMD Ryzen 5 7530U with Radeon Graphics @ 2.00GHz
-- **RAM:** 16 GB   
-- **System Type:** 64-bit operating system, x86_64-based processor  
+- **Processor:** 11th Gen Intel(R) Core(TM) i5-11400F @ 2.60GHz  
+- **RAM:** 16 GB (15.9 GB usable)  
+- **System Type:** 64-bit operating system, x64-based processor  
+
+> Note: The code was run in a virtual machine configured to use all available resources of the host system.
