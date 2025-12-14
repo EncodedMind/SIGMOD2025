@@ -103,7 +103,7 @@ We decided **not** to display each individual query time. Instead, we present th
 | Member             | Contributions                                                                                                                                                                                             |
 | -----------------  | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **D. Andreakis**   |  • Implemented Late Materialization and Column Store optimization techniques. <br> • Co-implemented Unchained Hashtable <br> • Set up continuous integration through GitHub Actions. <br>• Executed performance testing.|
-| **Ev. Vasileiou**  | • Implemented Unit-Tests for Column Store, Late Materialization. <br> • Co-implemented unchaned table Unit-Test. |
+| **Ev. Vasileiou**  | • Implemented Unit-Tests for Column Store, Late Materialization. <br> • Co-implemented Unchained table Unit-Test. |
 | **A. Kolokouras** | • Co-implemented Unchained Hashtable. <br> • Co-implemented Unchained table Unit-Test. <br> • Utilized profiling tools for optimization of execution time.|
 
 ---
