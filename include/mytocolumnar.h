@@ -10,7 +10,7 @@
 
 namespace mytocolumnar{
 
-    std::string materialize_string(const Plan& plan, const valuet::NewString& stringref){
+    inline std::string materialize_string(const Plan& plan, const valuet::NewString& stringref){
         uint8_t table_id = stringref.table_id;
         uint8_t column_id = stringref.column_id;
         uint32_t page_id = stringref.page_id;
@@ -56,7 +56,7 @@ namespace mytocolumnar{
         return result;
     }
 
-    void set_bitmap(std::vector<uint8_t>& bitmap, uint16_t idx) {
+    inline void set_bitmap(std::vector<uint8_t>& bitmap, uint16_t idx) {
         while (bitmap.size() < idx / 8 + 1) {
             bitmap.emplace_back(0);
         }
@@ -65,7 +65,7 @@ namespace mytocolumnar{
         bitmap[byte_idx] |= (1u << bit);
     }
 
-    void unset_bitmap(std::vector<uint8_t>& bitmap, uint16_t idx) {
+    inline void unset_bitmap(std::vector<uint8_t>& bitmap, uint16_t idx) {
         while (bitmap.size() < idx / 8 + 1) {
             bitmap.emplace_back(0);
         }
@@ -74,7 +74,7 @@ namespace mytocolumnar{
         bitmap[byte_idx] &= ~(1u << bit);
     }
 
-    ColumnarTable to_columnar_value_t(const std::vector<columnt::column_t>& table, const Plan& plan){
+    inline ColumnarTable to_columnar_value_t(const std::vector<columnt::column_t>& table, const Plan& plan){
         const std::vector<std::tuple<size_t, DataType>>& output_attrs = plan.nodes[plan.root].output_attrs;
         namespace views  = ranges::views;
         ColumnarTable ret;

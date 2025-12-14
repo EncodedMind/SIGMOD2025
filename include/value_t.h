@@ -6,10 +6,10 @@ namespace valuet{
 
     struct NewString{ // must be 64-bit (8 bytes)
         
-        uint8_t table_id; // which table the string is in
-        uint8_t column_id; // which column of the table the string is in
         uint32_t page_id; // which page of the column the string is in
         uint16_t offset_idx; // which offset of the page the string ends at (the previous offset is where it begins)
+        uint8_t table_id; // which table the string is in
+        uint8_t column_id; // which column of the table the string is in
  
         NewString() = default;
         NewString(uint8_t table_id, uint8_t column_id, uint32_t page_id, uint16_t offset_idx) : table_id(table_id), column_id(column_id), page_id(page_id), offset_idx(offset_idx){}

@@ -10,13 +10,13 @@
 
 namespace mycopyscan{
 
-    bool get_bitmap(const uint8_t* bitmap, uint16_t idx) {
+    inline bool get_bitmap(const uint8_t* bitmap, uint16_t idx) {
         auto byte_idx = idx / 8;
         auto bit      = idx % 8;
         return bitmap[byte_idx] & (1u << bit);
     }
 
-    std::vector<columnt::column_t> copy_scan_value_t(const ColumnarTable& table,
+    inline std::vector<columnt::column_t> copy_scan_value_t(const ColumnarTable& table,
         const std::vector<std::tuple<size_t, DataType>>& output_attrs, uint8_t table_id){
         namespace views = ranges::views;
         std::vector<columnt::column_t> results;
