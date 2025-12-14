@@ -2,140 +2,79 @@
 
 This project is based on the [SIGMOD 2025 programming contest](https://sigmod-contest-2025.github.io). The task involves optimizing the join pipeline by implementing an efficient join algorithm to reduce execution time.
 
-## Project Description
+## Second Assignment Description 
 
-In the first part of the assignment, we implemented the join operator by developing three different versions of the Hash Join algorithm. In the baseline solution, the hash table uses `std::unordered_map` from the C++ STL. We implemented three alternative hash-based join strategies to improve performance:
-1. Robin Hood Hashing
-2. Cuckoo Hashing
-3. Hopscotch Hashing
 
-## Team Information
+## Team Name: CTRL+S our lives
 
-**Team Name:** CTRL+S our lives
-
-| Name                 | Student ID     | GitHub Username |
-| -------------------- | -------------- | --------------- |
-| Andreakis Dimitrios  | 1115202300008  | EncodedMind     |
-| Vasileiou Evaggelos  | 1115201900309  | VangelisVas     |
-| Kolokouras Apostolos | 1115202100259  | TolisKlk        |
+| Name                 | Student ID     |       Academic email      | GitHub Username   |
+| -------------------- | -------------- | ------------------------- |------------------ |
+| Andreakis Dimitrios  | 1115202300008  | sdi2300008@di.uoa.gr    | EncodedMind       |
+| Vasileiou Evaggelos  | 1115201900309  | sdi1900309@di.uoa.gr    | VangelisVas       |
+| Kolokouras Apostolos | 1115202100259  | sdi2100259@di.uoa.gr      | TolisKlk          |
 
 ---
 
 ## File Structure
-*\*Only the most essential files\**
+
+****Essential files only***
 ```bash
 k23a-2025-d1-ctrl-s-our-souls/
 ├── src/
 │   ├── execute.cpp
+│   ├── unchained_hashtable.cpp
 ├── include/
-│   ├── robinhood.h
-│   ├── cuckoo.h
-│   ├── hopscotch.h
+│   ├── unchained_hashtable.h
+│   ├── execute_root.h
+│   ├── value_t.h
+│   ├── column_t.h
+│   ├── mycopyscan.h
+│   ├── mytocolumnar.h
 ├── tests/
-│   └── hash_tests.cpp
+│   └── opt_tests.cpp
 ├── job/
 ├── CMakeLists.txt
-├── Makefile
 └── README.md
 ```
 
 ---
 
-## How to Run
+## Run Instunctions
 
-### Quick start
+### Refer to original SIGMOD repository for full details
+[SIGMOD 2025 programming contest](https://sigmod-contest-2025.github.io)
 
-> [!TIP]
-> Run all the following commands in the root directory of this project.
-
-First, download the imdb dataset.
-
-```bash
-./download_imdb.sh
-```
-
-Second, build the project.
-
+#### Build
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
 cmake --build build -- -j $(nproc)
 ```
 
-Third, prepare the DuckDB database for correctness checking.
-
-```bash
-./build/build_database imdb.db
-```
-
-Now, you can run the tests:
+#### Run (Not cached)
 ```bash
 ./build/run plans.json
 ```
-> [!TIP]
-> If you want to use `Ninja Multi-Config` as the generator. The commands will look like:
-> 
->```bash
-> cmake -S . -B build -Wno-dev -G "Ninja Multi-Config"
-> cmake --build build --config Release -- -j $(nproc)
-> ./build/Release/build_database imdb.db
-> ./build/Release/run plans.json
-> ```
 
-### Cache
-
-**This section is only for UNIX users** \
-There are 2 new executables with this repository. They cache the join tables and
-result of each query and mmap them for faster loading times and getting rid of duckdb.
+#### Cache Build
 
 To build the cache you need to run:
 ```bash
 ./build/build_cache plans.json
 ```
 
-> [!TIP] 
-> If you are using `Linux x86_64` you can download our prebuilt cache with:
-> ```
-> wget http://share.uoa.gr/protected/all-download/sigmod25/sigmod25_cache_x86.tar.gz
-> ```
-> If you are using `macOS arm64` you can download our prebuilt cache with:
-> ```
-> wget http://share.uoa.gr/protected/all-download/sigmod25/sigmod25_cache_arm.tar.gz
-> ```
-> For all other systems you will need to build the cache on your own.
-
+#### Cache Run
 After the cache is built you can run the queries using:
 ```bash
 ./build/fast plans.json
 ```
 
-Also after you have built the cache you no longer need to build the `run` executable
-every time (which depends on duckdb and can be slow to compile). Just compile 
-the executable that uses the cache:
+#### Build after Cache is ready
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
 cmake --build build -- -j $(nproc) fast
 ```
 
 Code is compiled with Clang 18.
-
-**Make sure that only ONE header file is uncommented on the top of the `execute.cpp` file.** *Default is Robin Hood.*
-
----
-
-## Design Choices
-
-### Rehash Logic
-
-* Robin Hood: Robin Hood does not need rehash logic, because we are allocating a hash table that is always large enough.
-
-* Cuckoo: We detect cycles by counting the number of elements that have been moved. If we reach the total number of elements in the array, then a cycle must necessarily exist.
-
-* Hopscotch: We rehash when the neighbourhood of a key is full or when there is no availabe slot to move the "empty slot". The size of the neighborhood (H) was determined based on the original paper, which suggests H=32 or H=64. H=32 provided a slightly better average (-700ms).
-
-### Hash functions
-
-* For hashing functions, we implemented **CRC** and **Fibonacci Constant** for performance testing, which made the execution faster.
-* The size of each hashtable is the smallest power of 2 equal or larger than the build size. This allows us to do faster `%N` operations. We doubled this number to leave a larger margin and avoid collisions, which skyrocketed the total performance.
 
 ---
 
@@ -149,13 +88,13 @@ We decided **not** to display each individual query time. Instead, we present th
 
 | Algorithm         | Run 1 (ms)    | Run 2 (ms)    | Run 3 (ms)    | Run 4 (ms)    | Run 5 (ms)    | **Average (ms)**    |
 | ----------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------------- |
-| Unordered map     | 163384        | 159158        | 159332        | 158695        | 159671        | 160048              |
-| Robin Hood        | 183586        | 182904        | 182423        | 184060        | 186735        | 183942              |
-| Cuckoo            | 178391        | 178893        | 178260        | 178087        | 177715        | 178869              |
-| Hopscotch         | 174988        | 175875        | 173503        | 172534        | 172459        | 173872              |
+| Base Solution         | 170014    | 169454        | 169220        | 168890        | 168634        | 169242              |
+| Late Materialization  | 105971    | 105489        | 104977        | 105581        | 105710        | 105546              |                
+| Column Store          | 62120     | 62255         | 62023         | 62236         | 62088         | 62144               |
+| No root IR            | 60325     | 57856         | 55908         | 60855         | 59563         | 58901               |
+| Unchained table       | 46276     | 46231         | 46182         | 46145         | 46246         | 46216               |
 
-- The performance comparison shows that `std::unordered_map` was the fastest implementation overall, achieving the lowest average runtime (≈160 seconds).
-- Among the custom algorithms, Hopscotch hashing performed the best, followed by Cuckoo, while Robin Hood hashing was a little slower.
+- Performance results show that the unchained table, as described in the paper, achieves the fastest execution, being more than 4× faster than the base solution. All other optimizations also have a significant impact on runtime, with the column store in particular providing a large performance improvement.
 
 ---
 
@@ -163,9 +102,9 @@ We decided **not** to display each individual query time. Instead, we present th
 
 | Member             | Contributions                                                                                                                                                                                             |
 | -----------------  | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **D. Andreakis**   | • Implemented all three algorithms and integrated them into the main project.<br>• Set up continuous integration through GitHub Actions.<br>• Prepared the README.md.<br>• Executed performance testing.  |
-| **Ev. Vasileiou**  | • Created the Makefile to simplify compilation.<br>• Implemented the unit tests for Robin Hood and Cuckoo.                                                                                                |
-| **Ap. Kolokouras** | • Proposed integrating all components into a single executable with modular header files.<br>• Implemented the unit tests for Hopscotch.                                                                  |
+| **D. Andreakis**   |  • Implemented Late Materialization and Column Store optimization techniques. <br> • Co-implemented Unchained Hashtable <br> • Set up continuous integration through GitHub Actions. <br>• Executed performance testing.|
+| **Ev. Vasileiou**  | • Implemented Unit-Tests for Column Store, Late Materialization. <br> • Co-implemented unchaned table Unit-Test. |
+| **A. Kolokouras** | • Co-implemented Unchained Hashtable. <br> • Co-implemented Unchained table Unit-Test. <br> • Utilized profiling tools for optimization of execution time.|
 
 ---
 
@@ -173,8 +112,6 @@ We decided **not** to display each individual query time. Instead, we present th
 
 All performance tests were conducted on the following system:
 
-- **Processor:** 11th Gen Intel(R) Core(TM) i5-11400F @ 2.60GHz  
-- **RAM:** 16 GB (15.9 GB usable)  
-- **System Type:** 64-bit operating system, x64-based processor  
-
-> Note: The code was run in a virtual machine configured to use all available resources of the host system.
+- **Processor:** AMD Ryzen 5 7530U with Radeon Graphics @ 2.00GHz (Base), up to 4.55GHz
+- **RAM:** 16 GB   
+- **System Type:** 64-bit operating system, x86_64-based processor  
