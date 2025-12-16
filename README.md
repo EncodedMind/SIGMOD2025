@@ -140,7 +140,7 @@ We decided **not** to display each individual query time. Instead, we present th
 | Late Materialization  | 105971    | 105489        | 104977        | 105581        | 105710        | 105546              |                
 | Column Store          | 62120     | 62255         | 62023         | 62236         | 62088         | 62144               |
 | No root IR            | 60325     | 57856         | 55908         | 60855         | 59563         | 58901               |
-| Unchained table       | 46276     | 46231         | 46182         | 46145         | 46246         | 46216               |
+| Unchained table       | 43467     | 43376         | 43521         | 43457         | 42733         | 43311               |
 
 - Performance results show that the unchained table, as described in the paper, achieves the fastest execution, being more than 4× faster than the base solution. All other optimizations also have a significant impact on runtime, with the column store in particular providing a large performance improvement.
 
