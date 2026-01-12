@@ -29,13 +29,33 @@ namespace mycopyscan{
                 auto& column = table.columns[in_col_idx];
                 types[in_col_idx] = column.type;
                 uint32_t page_id = 0;
+                bool dense_column = false;
 
+                // check if all pages of an INT32 column are dense => dense column
+                if(column.type == DataType::INT32){
+                    dense_column = true;
+                    for (auto* page: column.pages | views::transform([](auto* page) { return page->data; })) {
+                        auto num_rows = *reinterpret_cast<uint16_t*>(page);
+                        auto num_values = *reinterpret_cast<const uint16_t*>(page + 2);
+                        if(num_rows != num_values){ // sparse page spotted
+                            dense_column = false; // so column cannot be dense
+                            break;
+                        }
+                    }
+                }
+                
+                // dense column: do not copy any page
+                if(dense_column){
+                    results[column_idx].reference_column(table, in_col_idx);
+                    continue;
+                }
+
+                // sparse column: copy all pages
                 for (auto* page: column.pages | views::transform([](auto* page) { return page->data; })) {
                     switch (column.type) {
 
                     case DataType::INT32: {
                         auto num_rows = *reinterpret_cast<uint16_t*>(page);
-                        // page+2 num_values
                         auto* data_begin = reinterpret_cast<int32_t*>(page + 4);
                         auto* bitmap = reinterpret_cast<uint8_t*>(page + PAGE_SIZE - (num_rows + 7) / 8);
                         uint16_t data_idx = 0;

@@ -117,9 +117,20 @@ struct UnchainedHashTable {
     size_t size() const { return num_elements; }
     
     static uint64_t hash(int32_t key) {
-        // CRC32 hash with Fibonacci multiplicative constant
-        uint32_t crc = __builtin_ia32_crc32si(static_cast<uint32_t>(key), 0);
+
+        uint32_t crc = 0;
+        #if defined(__x86_64__) || defined(__i386__)
+            crc = __builtin_ia32_crc32si(static_cast<uint32_t>(key), 0);
+        #elif defined(__aarch64__)
+            crc = __builtin_arm_crc32w(static_cast<uint32_t>(key), 0);
+        #else
+            crc = static_cast<uint32_t>(key);
+        #endif
         return static_cast<uint64_t>(crc) * ((0x8648DBDull << 32) + 1);
+
+        // CRC32 hash with Fibonacci multiplicative constant
+        // uint32_t crc = __builtin_ia32_crc32si(static_cast<uint32_t>(key), 0);
+        // return static_cast<uint64_t>(crc) * ((0x8648DBDull << 32) + 1);
     }
     
     uint16_t compute_tag(uint64_t h) const {
