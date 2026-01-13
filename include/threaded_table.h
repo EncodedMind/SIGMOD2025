@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <memory>
 #include <vector>
 
 extern const uint16_t tags[1 << 11];
@@ -130,7 +131,7 @@ inline size_t log2_pow2(size_t n){
     return bits;
 }
 
-struct UnchainedHashTable {
+struct TupleCollector {
     uint64_t shift;
     size_t numPartitions;
     GlobalAllocator& level1;
@@ -138,14 +139,14 @@ struct UnchainedHashTable {
     std::vector<BumpAllocL3> level3;
     std::vector<size_t> counts;
     
-    UnchainedHashTable(GlobalAllocator& globalAlloc, size_t partitions) : level1(globalAlloc), numPartitions(partitions) {
+    TupleCollector(GlobalAllocator& globalAlloc, size_t partitions) : level1(globalAlloc), numPartitions(partitions) {
         level3.resize(numPartitions);
         counts.resize(numPartitions, 0);
         shift = static_cast<uint64_t>(log2_pow2(numPartitions));
     }
     
-    UnchainedHashTable(const UnchainedHashTable&) = delete;
-    UnchainedHashTable& operator=(const UnchainedHashTable&) = delete;
+    TupleCollector(const TupleCollector&) = delete;
+    TupleCollector& operator=(const TupleCollector&) = delete;
 
     void consume(HashEntry tuple){
         uint64_t part = (shift == 0) ? 0ull : (tuple.hash >> (uint64_t)(64u - shift));
@@ -242,7 +243,8 @@ struct FinalTable{
         }
         
         // Get range of entries for this slot
-        HashEntry* start = reinterpret_cast<HashEntry*>(directory[slot - 1] >> 16);
+        uint64_t prev_dir = (slot == 0) ? directory[-1] : directory[slot - 1];
+        HashEntry* start = reinterpret_cast<HashEntry*>(prev_dir >> 16);
         HashEntry* end = reinterpret_cast<HashEntry*>(directory[slot] >> 16);
         
         len = end - start;
@@ -265,7 +267,7 @@ struct FinalTable{
 // thread merging stage
 // merge all lists of chunks of partition into one list
 
-inline std::vector<Block*> merge_partitions(const std::vector<UnchainedHashTable>& threadTables, size_t numPartitions){
+inline std::vector<Block*> merge_partitions(const std::vector<std::unique_ptr<TupleCollector>>& threadTables, size_t numPartitions){
 
     std::vector<Block*> partition_heads(numPartitions, nullptr);
 
@@ -273,8 +275,8 @@ inline std::vector<Block*> merge_partitions(const std::vector<UnchainedHashTable
         Block* link_head = nullptr;
         Block* tail = nullptr;
 
-        for(const auto& threadTable : threadTables){
-            // iterate link_head to reach the end
+        for(const auto& threadTablePtr : threadTables){
+            const auto& threadTable = *threadTablePtr;
             Block* current = threadTable.level3[p].head;
             if(!current) continue;
             if(!link_head){
@@ -284,7 +286,6 @@ inline std::vector<Block*> merge_partitions(const std::vector<UnchainedHashTable
             else{
                 tail->next = current;
             }
-            // move tail to the end of the current list
             while(tail->next){
                 tail = tail->next;
             }

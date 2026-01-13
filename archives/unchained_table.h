@@ -91,6 +91,7 @@ struct UnchainedHashTable {
         
         // Free temporary storage
         temp_entries.clear();
+        temp_entries.shrink_to_fit();
     }
     
     // Find all row indices matching the key
@@ -106,8 +107,7 @@ struct UnchainedHashTable {
         }
         
         // Get range of entries for this slot
-        uint64_t prev_dir = (slot == 0) ? directory[-1] : directory[slot - 1];
-        HashEntry* start = reinterpret_cast<HashEntry*>(prev_dir >> 16);
+        HashEntry* start = reinterpret_cast<HashEntry*>(directory[slot - 1] >> 16);
         HashEntry* end = reinterpret_cast<HashEntry*>(directory[slot] >> 16);
         
         len = end - start;

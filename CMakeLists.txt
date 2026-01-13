@@ -117,8 +117,10 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
     add_executable(fast ${SIGMODPC_SRC} tests/read_sql.cpp)
 
     target_link_libraries(build_cache PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser duckdb)
+    target_link_libraries(build_cache PRIVATE pthread)
     target_compile_definitions(build_cache PRIVATE TEAMOPT_USE_DUCKDB TEAMOPT_BUILD_CACHE)
     target_link_libraries(fast PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
+    target_link_libraries(fast PRIVATE pthread)
     target_include_directories(build_cache PRIVATE include)
     target_include_directories(fast PRIVATE include)
 endif()
@@ -132,6 +134,12 @@ target_link_libraries(hopscotch_tests PRIVATE re2 range-v3 fmt Catch2::Catch2Wit
 target_link_libraries(robin_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
 target_link_libraries(hash_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
 target_link_libraries(opt_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
+
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_libraries(run PRIVATE pthread)
+    target_link_libraries(unit_tests PRIVATE pthread)
+    target_link_libraries(opt_tests PRIVATE pthread)
+endif()
 
 target_include_directories(run PRIVATE include)
 target_include_directories(build_database PRIVATE include)
