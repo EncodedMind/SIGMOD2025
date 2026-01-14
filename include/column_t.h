@@ -21,8 +21,6 @@ namespace columnt{
         size_t num_values = 0;
         Column* ref = nullptr;
 
-        mutable valuet::value_t ref_cache;
-
         column_t() = default;
 
         ~column_t(){
@@ -78,8 +76,9 @@ namespace columnt{
                 const std::byte* page = ref->pages[page_idx]->data;
                 const int32_t* data_begin = reinterpret_cast<const int32_t*>(page + 4);
                 int32_t value = data_begin[offset];
-                ref_cache = valuet::value_t(value);
-                return ref_cache;
+                thread_local valuet::value_t tls_cache;
+                tls_cache = valuet::value_t(value);
+                return tls_cache;
             }
         }
         
@@ -103,8 +102,9 @@ namespace columnt{
                 const std::byte* page = ref->pages[page_idx]->data;
                 const int32_t* data_begin = reinterpret_cast<const int32_t*>(page + 4);
                 int32_t value = data_begin[offset];
-                ref_cache = valuet::value_t(value);
-                return ref_cache;
+                thread_local valuet::value_t tls_cache;
+                tls_cache = valuet::value_t(value);
+                return tls_cache;
             }
         }
 
