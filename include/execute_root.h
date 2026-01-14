@@ -527,14 +527,23 @@ namespace Contest {
                             }
                         }
                     } else {
+                        // Work stealing + parallel materialization:
+                        // Each probe worker claims the next chunk via fetch_add and writes
+                        // directly into a thread-local output table. We then merge pages.
                         std::atomic<size_t> next_start{0};
+
+                        std::vector<std::unique_ptr<ThreadLocalWriter>> writers;
+                        writers.reserve(probe_threads);
+                        for (size_t t = 0; t < probe_threads; ++t) {
+                            writers.push_back(std::make_unique<ThreadLocalWriter>(plan, output_attrs, out_to_int_idx, out_to_varchar_idx));
+                        }
+
                         std::vector<std::thread> probe_workers;
                         probe_workers.reserve(probe_threads);
-                        std::vector<std::vector<std::pair<size_t, size_t>>> local_matches(probe_threads);
 
                         for (size_t t = 0; t < probe_threads; ++t) {
                             probe_workers.emplace_back([&, t]() {
-                                auto& matches = local_matches[t];
+                                auto& writer = *writers[t];
                                 while (true) {
                                     const size_t start = next_start.fetch_add(PROBE_CHUNK_ROWS, std::memory_order_relaxed);
                                     if (start >= probe_rows) break;
@@ -549,7 +558,17 @@ namespace Contest {
 
                                         for (size_t i = 0; i < len; ++i) {
                                             if (entries[i].key != key.intvalue) continue;
-                                            matches.emplace_back(entries[i].row_idx, right_idx);
+                                            const size_t left_idx = entries[i].row_idx;
+
+                                            for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                                                auto [col_idx, _] = output_attrs[out_idx];
+                                                if (col_idx < left.size()) {
+                                                    writer.insert_value(out_idx, left[col_idx][left_idx]);
+                                                } else {
+                                                    writer.insert_value(out_idx, right[col_idx - left.size()][right_idx]);
+                                                }
+                                            }
+                                            writer.table.num_rows++;
                                         }
                                     }
                                 }
@@ -557,19 +576,17 @@ namespace Contest {
                         }
                         for (auto& t : probe_workers) t.join();
 
+                        // Merge thread-local tables into final results (page-pointer moves).
                         for (size_t t = 0; t < probe_threads; ++t) {
-                            for (const auto& m : local_matches[t]) {
-                                const size_t left_idx = m.first;
-                                const size_t right_idx = m.second;
-                                for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
-                                    auto [col_idx, _] = output_attrs[out_idx];
-                                    if (col_idx < left.size()) {
-                                        insert_value(out_idx, left[col_idx][left_idx]);
-                                    } else {
-                                        insert_value(out_idx, right[col_idx - left.size()][right_idx]);
-                                    }
-                                }
-                                results.num_rows++;
+                            auto& writer = *writers[t];
+                            writer.finalize();
+                            results.num_rows += writer.table.num_rows;
+                            for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                                auto& dst = results.columns[out_idx];
+                                auto& src = writer.table.columns[out_idx];
+                                dst.pages.reserve(dst.pages.size() + src.pages.size());
+                                for (auto* p : src.pages) dst.pages.push_back(p);
+                                src.pages.clear();
                             }
                         }
                     }
@@ -606,14 +623,21 @@ namespace Contest {
                             }
                         }
                     } else {
+                        // Work stealing + parallel materialization into per-thread tables.
                         std::atomic<size_t> next_start{0};
+
+                        std::vector<std::unique_ptr<ThreadLocalWriter>> writers;
+                        writers.reserve(probe_threads);
+                        for (size_t t = 0; t < probe_threads; ++t) {
+                            writers.push_back(std::make_unique<ThreadLocalWriter>(plan, output_attrs, out_to_int_idx, out_to_varchar_idx));
+                        }
+
                         std::vector<std::thread> probe_workers;
                         probe_workers.reserve(probe_threads);
-                        std::vector<std::vector<std::pair<size_t, size_t>>> local_matches(probe_threads);
 
                         for (size_t t = 0; t < probe_threads; ++t) {
                             probe_workers.emplace_back([&, t]() {
-                                auto& matches = local_matches[t];
+                                auto& writer = *writers[t];
                                 while (true) {
                                     const size_t start = next_start.fetch_add(PROBE_CHUNK_ROWS, std::memory_order_relaxed);
                                     if (start >= probe_rows) break;
@@ -628,7 +652,17 @@ namespace Contest {
 
                                         for (size_t i = 0; i < len; ++i) {
                                             if (entries[i].key != key.intvalue) continue;
-                                            matches.emplace_back(left_idx, entries[i].row_idx);
+                                            const size_t right_idx = entries[i].row_idx;
+
+                                            for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                                                auto [col_idx, _] = output_attrs[out_idx];
+                                                if (col_idx < left.size()) {
+                                                    writer.insert_value(out_idx, left[col_idx][left_idx]);
+                                                } else {
+                                                    writer.insert_value(out_idx, right[col_idx - left.size()][right_idx]);
+                                                }
+                                            }
+                                            writer.table.num_rows++;
                                         }
                                     }
                                 }
@@ -637,18 +671,15 @@ namespace Contest {
                         for (auto& t : probe_workers) t.join();
 
                         for (size_t t = 0; t < probe_threads; ++t) {
-                            for (const auto& m : local_matches[t]) {
-                                const size_t left_idx = m.first;
-                                const size_t right_idx = m.second;
-                                for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
-                                    auto [col_idx, _] = output_attrs[out_idx];
-                                    if (col_idx < left.size()) {
-                                        insert_value(out_idx, left[col_idx][left_idx]);
-                                    } else {
-                                        insert_value(out_idx, right[col_idx - left.size()][right_idx]);
-                                    }
-                                }
-                                results.num_rows++;
+                            auto& writer = *writers[t];
+                            writer.finalize();
+                            results.num_rows += writer.table.num_rows;
+                            for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                                auto& dst = results.columns[out_idx];
+                                auto& src = writer.table.columns[out_idx];
+                                dst.pages.reserve(dst.pages.size() + src.pages.size());
+                                for (auto* p : src.pages) dst.pages.push_back(p);
+                                src.pages.clear();
                             }
                         }
                     }
@@ -777,14 +808,20 @@ namespace Contest {
                         }
                     }
                 } else {
+                    // Work stealing + parallel materialization into per-thread tables.
                     std::atomic<size_t> next_start{0};
-                    std::vector<std::vector<std::pair<size_t, size_t>>> local_matches(num_threads);
 
-                    std::vector<std::thread> probe_threads;
-                    probe_threads.reserve(num_threads);
+                    std::vector<std::unique_ptr<ThreadLocalWriter>> writers;
+                    writers.reserve(num_threads);
                     for (size_t t = 0; t < num_threads; ++t) {
-                        probe_threads.emplace_back([&, t]() {
-                            auto& matches = local_matches[t];
+                        writers.push_back(std::make_unique<ThreadLocalWriter>(plan, output_attrs, out_to_int_idx, out_to_varchar_idx));
+                    }
+
+                    std::vector<std::thread> probe_workers;
+                    probe_workers.reserve(num_threads);
+                    for (size_t t = 0; t < num_threads; ++t) {
+                        probe_workers.emplace_back([&, t]() {
+                            auto& writer = *writers[t];
                             while (true) {
                                 const size_t start = next_start.fetch_add(PROBE_CHUNK_ROWS, std::memory_order_relaxed);
                                 if (start >= probe_rows) break;
@@ -798,27 +835,34 @@ namespace Contest {
                                     if (!entries || len == 0) continue;
                                     for (size_t i = 0; i < len; ++i) {
                                         if (entries[i].key != key.intvalue) continue;
-                                        matches.emplace_back(entries[i].row_idx, right_idx);
+                                        const size_t left_idx = entries[i].row_idx;
+
+                                        for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                                            auto [col_idx, _] = output_attrs[out_idx];
+                                            if (col_idx < left.size()) {
+                                                writer.insert_value(out_idx, left[col_idx][left_idx]);
+                                            } else {
+                                                writer.insert_value(out_idx, right[col_idx - left.size()][right_idx]);
+                                            }
+                                        }
+                                        writer.table.num_rows++;
                                     }
                                 }
                             }
                         });
                     }
-                    for (auto& t : probe_threads) t.join();
+                    for (auto& t : probe_workers) t.join();
 
                     for (size_t t = 0; t < num_threads; ++t) {
-                        for (const auto& m : local_matches[t]) {
-                            const size_t left_idx = m.first;
-                            const size_t right_idx = m.second;
-                            for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
-                                auto [col_idx, _] = output_attrs[out_idx];
-                                if (col_idx < left.size()) {
-                                    insert_value(out_idx, left[col_idx][left_idx]);
-                                } else {
-                                    insert_value(out_idx, right[col_idx - left.size()][right_idx]);
-                                }
-                            }
-                            results.num_rows++;
+                        auto& writer = *writers[t];
+                        writer.finalize();
+                        results.num_rows += writer.table.num_rows;
+                        for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                            auto& dst = results.columns[out_idx];
+                            auto& src = writer.table.columns[out_idx];
+                            dst.pages.reserve(dst.pages.size() + src.pages.size());
+                            for (auto* p : src.pages) dst.pages.push_back(p);
+                            src.pages.clear();
                         }
                     }
                 }
@@ -931,14 +975,20 @@ namespace Contest {
                         }
                     }
                 } else {
+                    // Work stealing + parallel materialization into per-thread tables.
                     std::atomic<size_t> next_start{0};
-                    std::vector<std::vector<std::pair<size_t, size_t>>> local_matches(num_threads);
 
-                    std::vector<std::thread> probe_threads;
-                    probe_threads.reserve(num_threads);
+                    std::vector<std::unique_ptr<ThreadLocalWriter>> writers;
+                    writers.reserve(num_threads);
                     for (size_t t = 0; t < num_threads; ++t) {
-                        probe_threads.emplace_back([&, t]() {
-                            auto& matches = local_matches[t];
+                        writers.push_back(std::make_unique<ThreadLocalWriter>(plan, output_attrs, out_to_int_idx, out_to_varchar_idx));
+                    }
+
+                    std::vector<std::thread> probe_workers;
+                    probe_workers.reserve(num_threads);
+                    for (size_t t = 0; t < num_threads; ++t) {
+                        probe_workers.emplace_back([&, t]() {
+                            auto& writer = *writers[t];
                             while (true) {
                                 const size_t start = next_start.fetch_add(PROBE_CHUNK_ROWS, std::memory_order_relaxed);
                                 if (start >= probe_rows) break;
@@ -952,27 +1002,34 @@ namespace Contest {
                                     if (!entries || len == 0) continue;
                                     for (size_t i = 0; i < len; ++i) {
                                         if (entries[i].key != key.intvalue) continue;
-                                        matches.emplace_back(left_idx, entries[i].row_idx);
+                                        const size_t right_idx = entries[i].row_idx;
+
+                                        for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                                            auto [col_idx, _] = output_attrs[out_idx];
+                                            if (col_idx < left.size()) {
+                                                writer.insert_value(out_idx, left[col_idx][left_idx]);
+                                            } else {
+                                                writer.insert_value(out_idx, right[col_idx - left.size()][right_idx]);
+                                            }
+                                        }
+                                        writer.table.num_rows++;
                                     }
                                 }
                             }
                         });
                     }
-                    for (auto& t : probe_threads) t.join();
+                    for (auto& t : probe_workers) t.join();
 
                     for (size_t t = 0; t < num_threads; ++t) {
-                        for (const auto& m : local_matches[t]) {
-                            const size_t left_idx = m.first;
-                            const size_t right_idx = m.second;
-                            for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
-                                auto [col_idx, _] = output_attrs[out_idx];
-                                if (col_idx < left.size()) {
-                                    insert_value(out_idx, left[col_idx][left_idx]);
-                                } else {
-                                    insert_value(out_idx, right[col_idx - left.size()][right_idx]);
-                                }
-                            }
-                            results.num_rows++;
+                        auto& writer = *writers[t];
+                        writer.finalize();
+                        results.num_rows += writer.table.num_rows;
+                        for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
+                            auto& dst = results.columns[out_idx];
+                            auto& src = writer.table.columns[out_idx];
+                            dst.pages.reserve(dst.pages.size() + src.pages.size());
+                            for (auto* p : src.pages) dst.pages.push_back(p);
+                            src.pages.clear();
                         }
                     }
                 }

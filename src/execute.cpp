@@ -80,8 +80,14 @@ struct JoinAlgorithm {
             return;
         }
 
-        std::atomic<size_t> next_start{0};
+        // Work stealing
+        // Each thread repeatedly grabs the next page index via an atomic fetch_add.
+        // Threads that finish early keep grabbing new pages until all pages are processed.
+        const size_t probe_pages = (probe_rows + PROBE_CHUNK_ROWS - 1) / PROBE_CHUNK_ROWS;
+        std::atomic<size_t> next_page{0};
+
         std::vector<std::vector<std::pair<size_t, size_t>>> local_matches(probe_threads);
+
         std::vector<std::thread> probe_workers;
         probe_workers.reserve(probe_threads);
 
@@ -89,8 +95,9 @@ struct JoinAlgorithm {
             probe_workers.emplace_back([&, t]() {
                 auto& matches = local_matches[t];
                 while(true){
-                    const size_t start = next_start.fetch_add(PROBE_CHUNK_ROWS, std::memory_order_relaxed);
-                    if(start >= probe_rows) break;
+                    const size_t page = next_page.fetch_add(1, std::memory_order_relaxed);
+                    if(page >= probe_pages) break;
+                    const size_t start = page * PROBE_CHUNK_ROWS;
                     const size_t end = std::min(start + PROBE_CHUNK_ROWS, probe_rows);
                     for(size_t probe_idx = start; probe_idx < end; ++probe_idx){
                         const auto& key = probe_side[probe_col][probe_idx];
@@ -112,11 +119,56 @@ struct JoinAlgorithm {
         }
         for(auto& t : probe_workers) t.join();
 
+        // we compute the ranges for each thread
+        std::vector<size_t> offsets(probe_threads + 1, 0);
         for(size_t t = 0; t < probe_threads; ++t){
-            for(const auto& m : local_matches[t]){
-                emit_row(m.first, m.second);
-            }
+            offsets[t+1] = offsets[t] + local_matches[t].size();
         }
+        const size_t total_rows = offsets[probe_threads];
+
+        // pre-allocating columns to avoid locks
+        const size_t needed_pages = (total_rows + columnt::VALUES_PER_PAGE - 1) / columnt::VALUES_PER_PAGE;
+        for(size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx){
+            auto& col = results[out_idx];
+            if(col.ref) continue;
+            col.pages.reserve(needed_pages);
+
+            while(col.pages.size() < needed_pages){
+                col.pages.push_back(new columnt::Intermediate_Page());
+            }
+            col.num_values = total_rows;
+        }
+
+        auto write_at = [](columnt::column_t& col, size_t idx, const valuet::value_t& v){
+            const size_t page_idx = idx / columnt::VALUES_PER_PAGE;
+            const size_t offset = idx % columnt::VALUES_PER_PAGE;
+            col.pages[page_idx]->data[offset] = v;
+        };
+
+        // parallel materialization in disjoint output ranges
+        std::vector<std::thread> mat_workers;
+        mat_workers.reserve(probe_threads);
+        for(size_t t = 0; t < probe_threads; ++t){
+            mat_workers.emplace_back([&, t]() {
+                const size_t base = offsets[t];
+                const auto& matches = local_matches[t];
+                for(size_t i = 0; i < matches.size(); ++i){
+                    const size_t out_row = base + i;
+                    const size_t left_idx = matches[i].first;
+                    const size_t right_idx = matches[i].second;
+
+                    for(size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx){
+                        auto [col_idx, _] = output_attrs[out_idx];
+                        if(col_idx < left.size()){
+                            write_at(results[out_idx], out_row, left[col_idx][left_idx]);
+                        } else {
+                            write_at(results[out_idx], out_row, right[col_idx - left.size()][right_idx]);
+                        }
+                    }
+                }
+            });
+        }
+        for(auto& th : mat_workers) th.join();
     }
 
     auto run() {
