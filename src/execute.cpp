@@ -1,6 +1,11 @@
 // Unchained hash version
 
-#include <hardware.h>
+#if defined(SPC__USE_BENCHMARKVM_HARDWARE)
+#include <hardware_benchmarkvm.h>
+#else
+    #include <hardware.h>
+#endif
+// #include <hardware.h>
 #include <plan.h>
 #include <table.h>
 #include <iostream>
