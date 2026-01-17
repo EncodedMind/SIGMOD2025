@@ -71,6 +71,15 @@ if(CMAKE_SYSTEM_PROCESSOR MATCHES "ppc|powerpc|ppc64|ppc64le")
 endif()
 FetchContent_MakeAvailable(duckdb)
 
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND EXISTS "/proc/cpuinfo")
+    file(READ "/proc/cpuinfo" CPUINFO_CONTENT)
+    if(CPUINFO_CONTENT MATCHES "E5-2680 v3")
+        message(STATUS "Detected Intel Xeon E5-2680 v3 CPU - using benchmark VM hardware configuration")
+        add_compile_definitions(SPC__USE_BENCHMARKVM_HARDWARE)
+    endif()
+endif()
+
 # Include all sources from /src directory. CONFIGURE_DEPENDS can be unreliable.
 # Try re-running cmake in case changes are not recognized.
 file(GLOB SIGMODPC_SRC
@@ -123,6 +132,16 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_link_libraries(fast PRIVATE pthread)
     target_include_directories(build_cache PRIVATE include)
     target_include_directories(fast PRIVATE include)
+
+    # Always build leaderboard alongside fast so it's available when building 'fast'.
+    add_executable(leaderboard ${SIGMODPC_SRC} tests/read_sql.cpp)
+    target_link_libraries(leaderboard PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
+    target_link_libraries(leaderboard PRIVATE pthread)
+    target_include_directories(leaderboard PRIVATE include)
+
+    target_link_libraries(run PRIVATE pthread)
+    target_link_libraries(unit_tests PRIVATE pthread)
+    target_link_libraries(opt_tests PRIVATE pthread)
 endif()
 
 target_link_libraries(run PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser duckdb)
@@ -135,11 +154,11 @@ target_link_libraries(robin_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMai
 target_link_libraries(hash_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
 target_link_libraries(opt_tests PRIVATE re2 range-v3 fmt Catch2::Catch2WithMain)
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    target_link_libraries(run PRIVATE pthread)
-    target_link_libraries(unit_tests PRIVATE pthread)
-    target_link_libraries(opt_tests PRIVATE pthread)
-endif()
+# if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
+#     target_link_libraries(run PRIVATE pthread)
+#     target_link_libraries(unit_tests PRIVATE pthread)
+#     target_link_libraries(opt_tests PRIVATE pthread)
+# endif()
 
 target_include_directories(run PRIVATE include)
 target_include_directories(build_database PRIVATE include)
