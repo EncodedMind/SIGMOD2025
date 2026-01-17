@@ -135,10 +135,13 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
     # Always build leaderboard alongside fast so it's available when building 'fast'.
     add_executable(leaderboard ${SIGMODPC_SRC} tests/read_sql.cpp)
-    target_compile_definitions(leaderboard PRIVATE)
     target_link_libraries(leaderboard PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser)
+    target_link_libraries(leaderboard PRIVATE pthread)
     target_include_directories(leaderboard PRIVATE include)
-    add_dependencies(fast leaderboard)
+
+    target_link_libraries(run PRIVATE pthread)
+    target_link_libraries(unit_tests PRIVATE pthread)
+    target_link_libraries(opt_tests PRIVATE pthread)
 endif()
 
 target_link_libraries(run PRIVATE re2 fmt range-v3 nlohmann_json::nlohmann_json sqlparser duckdb)

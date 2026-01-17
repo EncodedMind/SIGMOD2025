@@ -1,6 +1,6 @@
 #pragma once
 #if defined(SPC__USE_BENCHMARKVM_HARDWARE)
-#include <hardware_benchmarkvm.h>
+#include <hardware_vm.h>
 #else
     #include <hardware.h>
 #endif
@@ -512,13 +512,14 @@ namespace Contest {
                         for (size_t right_idx = 0; right_idx < probe_rows; ++right_idx) {
                             const auto& key = right[right_col][right_idx];
                             if (key.is_null_int32()) continue;
+                            const int32_t key_value = key.intvalue;
 
                             size_t len = 0;
-                            const ::HashEntry* entries = ht.find_range(key.intvalue, len);
+                            const ::HashEntry* entries = ht.find_range(key_value, len);
                             if (!entries || len == 0) continue;
 
                             for (size_t i = 0; i < len; ++i) {
-                                if (entries[i].key != key.intvalue) continue;
+                                if (entries[i].key != key_value) continue;
                                 const size_t left_idx = entries[i].row_idx;
                                 for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
                                     auto [col_idx, _] = output_attrs[out_idx];
@@ -556,13 +557,14 @@ namespace Contest {
                                     for (size_t right_idx = start; right_idx < end; ++right_idx) {
                                         const auto& key = right[right_col][right_idx];
                                         if (key.is_null_int32()) continue;
+                                        const int32_t key_value = key.intvalue;
 
                                         size_t len = 0;
-                                        const ::HashEntry* entries = ht.find_range(key.intvalue, len);
+                                        const ::HashEntry* entries = ht.find_range(key_value, len);
                                         if (!entries || len == 0) continue;
 
                                         for (size_t i = 0; i < len; ++i) {
-                                            if (entries[i].key != key.intvalue) continue;
+                                            if (entries[i].key != key_value) continue;
                                             const size_t left_idx = entries[i].row_idx;
 
                                             for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
@@ -608,13 +610,14 @@ namespace Contest {
                         for (size_t left_idx = 0; left_idx < probe_rows; ++left_idx) {
                             const auto& key = left[left_col][left_idx];
                             if (key.is_null_int32()) continue;
+                            const int32_t key_value = key.intvalue;
 
                             size_t len = 0;
-                            const ::HashEntry* entries = ht.find_range(key.intvalue, len);
+                            const ::HashEntry* entries = ht.find_range(key_value, len);
                             if (!entries || len == 0) continue;
 
                             for (size_t i = 0; i < len; ++i) {
-                                if (entries[i].key != key.intvalue) continue;
+                                if (entries[i].key != key_value) continue;
                                 const size_t right_idx = entries[i].row_idx;
                                 for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
                                     auto [col_idx, _] = output_attrs[out_idx];
@@ -650,13 +653,14 @@ namespace Contest {
                                     for (size_t left_idx = start; left_idx < end; ++left_idx) {
                                         const auto& key = left[left_col][left_idx];
                                         if (key.is_null_int32()) continue;
+                                        const int32_t key_value = key.intvalue;
 
                                         size_t len = 0;
-                                        const ::HashEntry* entries = ht.find_range(key.intvalue, len);
+                                        const ::HashEntry* entries = ht.find_range(key_value, len);
                                         if (!entries || len == 0) continue;
 
                                         for (size_t i = 0; i < len; ++i) {
-                                            if (entries[i].key != key.intvalue) continue;
+                                            if (entries[i].key != key_value) continue;
                                             const size_t right_idx = entries[i].row_idx;
 
                                             for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
@@ -793,13 +797,14 @@ namespace Contest {
                     for(size_t right_idx = 0; right_idx < probe_rows; ++right_idx){
                         const auto& key = right[right_col][right_idx];
                         if(key.is_null_int32()) continue;
+                        const int32_t key_value = key.intvalue;
 
                         size_t len = 0;
-                        const threaded::HashEntry* entries = final_table.find_range(key.intvalue, len);
+                        const threaded::HashEntry* entries = final_table.find_range(key_value, len);
                         if (!entries || len == 0) continue;
 
                         for (size_t i = 0; i < len; ++i) {
-                            if (entries[i].key != key.intvalue) continue;
+                            if (entries[i].key != key_value) continue;
                             size_t left_idx = entries[i].row_idx;
                             for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
                                 auto [col_idx, _] = output_attrs[out_idx];
@@ -834,12 +839,13 @@ namespace Contest {
                                 for (size_t right_idx = start; right_idx < end; ++right_idx) {
                                     const auto& key = right[right_col][right_idx];
                                     if (key.is_null_int32()) continue;
+                                    const int32_t key_value = key.intvalue;
 
                                     size_t len = 0;
-                                    const threaded::HashEntry* entries = final_table.find_range(key.intvalue, len);
+                                    const threaded::HashEntry* entries = final_table.find_range(key_value, len);
                                     if (!entries || len == 0) continue;
                                     for (size_t i = 0; i < len; ++i) {
-                                        if (entries[i].key != key.intvalue) continue;
+                                        if (entries[i].key != key_value) continue;
                                         const size_t left_idx = entries[i].row_idx;
 
                                         for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
@@ -960,13 +966,14 @@ namespace Contest {
                     for (size_t left_idx = 0; left_idx < probe_rows; ++left_idx) {
                         const auto& key = left[left_col][left_idx];
                         if(key.is_null_int32()) continue;
+                        const int32_t key_value = key.intvalue;
 
                         size_t len = 0;
-                        const threaded::HashEntry* entries = final_table.find_range(key.intvalue, len);
+                        const threaded::HashEntry* entries = final_table.find_range(key_value, len);
                         if (!entries || len == 0) continue;
 
                         for (size_t i = 0; i < len; ++i) {
-                            if (entries[i].key != key.intvalue) continue;
+                            if (entries[i].key != key_value) continue;
                             size_t right_idx = entries[i].row_idx;
                             for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {
                                 auto [col_idx, _] = output_attrs[out_idx];
@@ -1001,12 +1008,13 @@ namespace Contest {
                                 for (size_t left_idx = start; left_idx < end; ++left_idx) {
                                     const auto& key = left[left_col][left_idx];
                                     if (key.is_null_int32()) continue;
+                                    const int32_t key_value = key.intvalue;
 
                                     size_t len = 0;
-                                    const threaded::HashEntry* entries = final_table.find_range(key.intvalue, len);
+                                    const threaded::HashEntry* entries = final_table.find_range(key_value, len);
                                     if (!entries || len == 0) continue;
                                     for (size_t i = 0; i < len; ++i) {
-                                        if (entries[i].key != key.intvalue) continue;
+                                        if (entries[i].key != key_value) continue;
                                         const size_t right_idx = entries[i].row_idx;
 
                                         for (size_t out_idx = 0; out_idx < output_attrs.size(); ++out_idx) {

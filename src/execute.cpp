@@ -1,7 +1,7 @@
 // Unchained hash version
 
 #if defined(SPC__USE_BENCHMARKVM_HARDWARE)
-#include <hardware_benchmarkvm.h>
+#include <hardware_vm.h>
 #else
     #include <hardware.h>
 #endif
@@ -70,13 +70,14 @@ struct JoinAlgorithm {
             for(size_t probe_idx = 0; probe_idx < probe_rows; ++probe_idx){
                 const auto& key = probe_side[probe_col][probe_idx];
                 if(key.is_null_int32()) continue;
+                const int32_t key_value = key.intvalue;
 
                 size_t len = 0;
-                const auto* entries = table.find_range(key.intvalue, len);
+                const auto* entries = table.find_range(key_value, len);
                 if(!entries || len == 0) continue;
 
                 for(size_t i = 0; i < len; ++i){
-                    if(entries[i].key != key.intvalue) continue;
+                    if(entries[i].key != key_value) continue;
                     const size_t left_idx = BuildLeft ? entries[i].row_idx : probe_idx;
                     const size_t right_idx = BuildLeft ? probe_idx : entries[i].row_idx;
                     emit_row(left_idx, right_idx);
