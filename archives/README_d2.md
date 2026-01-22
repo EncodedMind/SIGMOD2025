@@ -4,12 +4,12 @@ This project is based on the [SIGMOD 2025 programming contest](https://sigmod-co
 
 ## Project Description 
 
-In the third part of the assignment, we implemented an optimized join operator by developing an optimization technique and parallelizing critical execution paths. The baseline solution copies all columns including full INT32 pages, which significantly impacts performance. To address this and leverage multi-core architectures, we implemented the following optimization strategies:
+In the second part of the assignment, we implemented the join operator by developing three optimization techniques. In the baseline solution, strings are fully materialized and copied early during query execution, causing unnecessary data movement. Moreover, intermediate join results are currently materialized in a row-store format, preventing us from benefiting from column-store cache locality and performance. Last, the current hash join implementation does not handle skewed or duplicate-heavy data efficiently, limiting performance for selective joins. To address these issues, we implemented the following optimization strategies:
 
-1. Indexing: Reference for dense INT32 columns
-2. Building Parallelization: Multi-threaded hash table construction
-3. Probing Parallelization: Multi-threaded join probing
-4. Work Stealing: Load balancing using atomic chunk scheduling
+1.1. Late Materialization for strings  
+1.2. Eliminating Intermediate Results at the Root Join  
+2. Column Store  
+3. Unchained Hashing  
 
 ## Team Information
 
@@ -31,15 +31,15 @@ k23a-2025-d1-ctrl-s-our-souls/
 ├── src/
 │   ├── execute.cpp
 │   ├── unchained_hashtable.cpp
-│   ├── threaded_table.cpp
 ├── include/
 │   ├── unchained_hashtable.h
-│   ├── threaded_table.h
 │   ├── execute_root.h
+│   ├── value_t.h
 │   ├── column_t.h
 │   ├── mycopyscan.h
+│   ├── mytocolumnar.h
 ├── tests/
-│   └── paral_tests.cpp
+│   └── opt_tests.cpp
 ├── job/
 ├── CMakeLists.txt
 └── README.md
@@ -134,24 +134,15 @@ We decided **not** to display each individual query time. Instead, we present th
 
 ### Timing Comparison
 
-| Algorithm                | Run 1 (ms)    | Run 2 (ms)    | Run 3 (ms)    | Run 4 (ms)    | Run 5 (ms)    | **Average (ms)**    |
-| ------------------------ | ------------- | ------------- | ------------- | ------------- | ------------- | ------------------- |
-| Base Solution            | 170014        | 169454        | 169220        | 168890        | 168634        | 169242              |
-| Indexing                 | 13035         | 12969         | 12842         | 13050         | 13190         | 13017               |                
-| Building Parallelization | 12906         | 13085         | 12853         | 12873         | 12877         | 12919               |
-| Probing Parallelization  | 7836          | 7757          | 7841          | 7754          | 7800          | 7798                |
-| Work Stealing            | 6161          | 6316          | 6090          | 6315          | 6160          | 6208                |
+| Algorithm         | Run 1 (ms)    | Run 2 (ms)    | Run 3 (ms)    | Run 4 (ms)    | Run 5 (ms)    | **Average (ms)**    |
+| ----------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------------- |
+| Base Solution         | 170014    | 169454        | 169220        | 168890        | 168634        | 169242              |
+| Late Materialization  | 105971    | 105489        | 104977        | 105581        | 105710        | 105546              |                
+| Column Store          | 62120     | 62255         | 62023         | 62236         | 62088         | 62144               |
+| No root IR            | 60325     | 57856         | 55908         | 60855         | 59563         | 58901               |
+| Unchained table       | 43467     | 43376         | 43521         | 43457         | 42733         | 43311               |
 
-### Tuning Parameters
-
-The code supports environment variables for performance tuning:
-```bash
-SPC_FORCE_THREADS="value" SPC_THREADED_MIN_BUILD="value" ./build/fast plans.json
-```
-- `SPC_FORCE_THREADS`: Override automatic thread detection (default: system thread count)
-- `SPC_THREADED_MIN_BUILD`: Minimum build size for parallel hash construction (default: 600,000 rows)
-
-After extensive experimentation, the default values (system threads & 600,000 threshold) provide optimal performance across diverse query workloads.
+- Performance results show that the unchained table, as described in the paper, achieves the fastest execution, being more than 4× faster than the base solution. All other optimizations also have a significant impact on runtime, with the column store in particular providing a large performance improvement.
 
 ---
 
@@ -159,9 +150,9 @@ After extensive experimentation, the default values (system threads & 600,000 th
 
 | Member             | Contributions                                                                                                                                                                                             |
 | -----------------  | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **D. Andreakis**   |  • Implemented Indexing optimization technique. <br> • Implemented Building Parallelization <br> • Implemented Probing Parallelization <br> • Implemented Work Stealing <br> • Set up continuous integration through GitHub Actions. <br> • Executed performance testing. <br> • Authored the final report.|
-| **Ev. Vasileiou**  | • Co-implemented Unit-Tests. |
-| **A. Kolokouras** | • Co-implemented Unit-Tests. |
+| **D. Andreakis**   |  • Implemented Late Materialization and Column Store optimization techniques. <br> • Co-implemented Unchained Hashtable <br> • Set up continuous integration through GitHub Actions. <br>• Executed performance testing.|
+| **Ev. Vasileiou**  | • Implemented Unit-Tests for Column Store, Late Materialization. <br> • Co-implemented Unchained table Unit-Test. |
+| **A. Kolokouras** | • Co-implemented Unchained Hashtable. <br> • Co-implemented Unchained table Unit-Test. <br> • Utilized profiling tools for optimization of execution time.|
 
 ---
 
@@ -169,8 +160,6 @@ After extensive experimentation, the default values (system threads & 600,000 th
 
 All performance tests were conducted on the following system:
 
-- **Processor:** 11th Gen Intel(R) Core(TM) i5-11400F @ 2.60GHz  
-- **RAM:** 16 GB (15.9 GB usable)  
-- **System Type:** 64-bit operating system, x64-based processor  
-
-> Note: The code was run in a virtual machine configured to use all available resources of the host system.
+- **Processor:** AMD Ryzen 5 7530U with Radeon Graphics @ 2.00GHz
+- **RAM:** 16 GB   
+- **System Type:** 64-bit operating system, x86_64-based processor  
