@@ -25,7 +25,7 @@ jobs:
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
 
       - name: Build unit tests
-        run: cmake --build build --target opt_tests -- -j $(nproc)
+        run: cmake --build build --target paral_tests -- -j $(nproc)
 
       - name: Run unit tests
-        run: ./build/opt_tests
+        run: ./build/paral_tests
