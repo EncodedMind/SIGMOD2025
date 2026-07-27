@@ -1,176 +1,130 @@
 # SIGMOD 2025: Join Pipeline Optimization
 
-This project is based on the [SIGMOD 2025 programming contest](https://sigmod-contest-2025.github.io). The task involves optimizing the join pipeline by implementing an efficient join algorithm to reduce execution time.
+This repository documents the evolution of a SIGMOD 2025 contest solution from a baseline hash-join implementation into a staged set of optimizations for scans, joins, materialization, and parallel execution. The goal is to make the project readable as a portfolio piece: what was built, why it was built, and where each step lives in the codebase.
 
-## Project Description 
+## Project Story
 
-In the third part of the assignment, we implemented an optimized join operator by developing an optimization technique and parallelizing critical execution paths. The baseline solution copies all columns including full INT32 pages, which significantly impacts performance. To address this and leverage multi-core architectures, we implemented the following optimization strategies:
+The work developed in three clear phases:
 
-1. Indexing: Reference for dense INT32 columns
-2. Building Parallelization: Multi-threaded hash table construction
-3. Probing Parallelization: Multi-threaded join probing
-4. Work Stealing: Load balancing using atomic chunk scheduling
+1. Baseline join variants.
+	We started with different hash table designs for the join operator: Robin Hood, Cuckoo, and Hopscotch hashing.
+2. Data-movement optimizations.
+	We reduced unnecessary copying with late materialization, a column-store representation, and an unchained hash table for better duplicate handling.
+3. Parallel execution and final tuning.
+	We then optimized the final executor with indexing for dense columns, parallel hash-table build, parallel probing, and work stealing.
 
-## Team Information
+The final implementation is the one in [src/execute.cpp](src/execute.cpp), while the intermediate versions are preserved in [archives/](archives) as a documented development trail.
 
-**Team Name:** CTRL+S our lives
+## What To Read First
 
-| Name                 | Student ID     |       Academic email      | GitHub Username   |
-| -------------------- | -------------- | ------------------------- |------------------ |
-| Andreakis Dimitrios  | 1115202300008  | sdi2300008@di.uoa.gr      | EncodedMind       |
-| Vasileiou Evaggelos  | 1115201900309  | sdi1900309@di.uoa.gr      | VangelisVas       |
-| Kolokouras Apostolos | 1115202100259  | sdi2100259@di.uoa.gr      | TolisKlk          |
+If you are opening this repository for the first time, this is the best order:
 
----
+1. [README.md](README.md) for the overall narrative and results.
+2. [archives/README_d1.md](archives/README_d1.md) for the first join-optimization stage.
+3. [archives/README_d2.md](archives/README_d2.md) for the second optimization stage.
+4. The companion documentation site for the final parallelized executor narrative.
+5. [src/execute.cpp](src/execute.cpp) for the final code path.
 
-## File Structure
+## Implementation Map
 
-*\*Only the most essential files\**
-```bash
-k23a-2025-d1-ctrl-s-our-souls/
-├── src/
-│   ├── execute.cpp
-│   ├── unchained_hashtable.cpp
-│   ├── threaded_table.cpp
-├── include/
-│   ├── unchained_hashtable.h
-│   ├── threaded_table.h
-│   ├── execute_root.h
-│   ├── column_t.h
-│   ├── mycopyscan.h
-├── tests/
-│   └── paral_tests.cpp
-├── job/
-├── CMakeLists.txt
-└── README.md
-```
+The repository is organized around the techniques that were added over time, not around assignment paperwork.
 
----
+### Stage 1: Hash-Join Variants
 
-## How to Run
+This stage explored alternative hash tables and the corresponding join executor.
 
-### Quick start
+- [archives/execute_initial.cpp](archives/execute_initial.cpp) shows the baseline join logic.
+- [archives/execute_rob.cpp](archives/execute_rob.cpp), [archives/execute_cuc.cpp](archives/execute_cuc.cpp), and [archives/execute_hop.cpp](archives/execute_hop.cpp) contain the Robin Hood, Cuckoo, and Hopscotch versions.
+- [archives/modules/](archives/modules) contains the standalone hash table prototypes used during that phase.
+- [tests/hash_tests.cpp](tests/hash_tests.cpp) and the hash-related unit tests document the expected behavior.
 
-> [!TIP]
-> Run all the following commands in the root directory of this project.
+### Stage 2: Late Materialization and Column Store
 
-First, download the imdb dataset.
+This stage reduced data movement and changed how intermediate results are represented.
 
-```bash
-./download_imdb.sh
-```
+- [archives/execute_d1.cpp](archives/execute_d1.cpp) captures the data-locality and materialization-oriented version.
+- [archives/execute_initial_optimized.cpp](archives/execute_initial_optimized.cpp) and [archives/unchained_table.cpp](archives/unchained_table.cpp) show the unchained-table path.
+- [tests/opt_tests.cpp](tests/opt_tests.cpp) documents the intended behavior of late materialization, column storage, and the unchained hash table.
 
-Second, build the project.
+### Stage 3: Parallel Build, Parallel Probe, and Work Stealing
 
-```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
-cmake --build build -- -j $(nproc)
-```
+This is the final version that aims to scale on multi-core hardware.
 
-Third, prepare the DuckDB database for correctness checking.
+- [src/execute.cpp](src/execute.cpp) contains the final executor.
+- The build phase is parallelized in the threaded table path.
+- The probe phase uses chunked work distribution and work stealing.
+- [tests/paral_tests.cpp](tests/paral_tests.cpp) covers the parallel execution behavior.
 
-```bash
-./build/build_database imdb.db
-```
+## Final Executor
 
-Now, you can run the tests:
-```bash
-./build/run plans.json
-```
-> [!TIP]
-> If you want to use `Ninja Multi-Config` as the generator. The commands will look like:
-> 
->```bash
-> cmake -S . -B build -Wno-dev -G "Ninja Multi-Config"
-> cmake --build build --config Release -- -j $(nproc)
-> ./build/Release/build_database imdb.db
-> ./build/Release/run plans.json
-> ```
+The final implementation in [src/execute.cpp](src/execute.cpp) follows this structure:
 
-### Cache
+- It executes scan nodes with copy-scan behavior into the late-materialized format.
+- It chooses the build side dynamically based on cardinality.
+- It uses the unchained hash table for the unthreaded path.
+- It switches to a threaded build/probe pipeline when the input is large enough.
+- It uses environment variables to tune thread counts and the build threshold.
 
-**This section is only for UNIX users** \
-There are 2 new executables with this repository. They cache the join tables and
-result of each query and mmap them for faster loading times and getting rid of duckdb.
+Relevant tuning knobs:
 
-To build the cache you need to run:
-```bash
-./build/build_cache plans.json
-```
-
-> [!TIP] 
-> If you are using `Linux x86_64` you can download our prebuilt cache with:
-> ```
-> wget http://share.uoa.gr/protected/all-download/sigmod25/sigmod25_cache_x86.tar.gz
-> ```
-> If you are using `macOS arm64` you can download our prebuilt cache with:
-> ```
-> wget http://share.uoa.gr/protected/all-download/sigmod25/sigmod25_cache_arm.tar.gz
-> ```
-> For all other systems you will need to build the cache on your own.
-
-After the cache is built you can run the queries using:
-```bash
-./build/fast plans.json
-```
-
-Also after you have built the cache you no longer need to build the `run` executable
-every time (which depends on duckdb and can be slow to compile). Just compile 
-the executable that uses the cache:
-```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
-cmake --build build -- -j $(nproc) fast
-```
-
-Code is compiled with Clang 18.
-
----
-
-## Performance Evaluation
-
-Each algorithm was executed **five times** to account for random variations in query order and hash collisions. We then computed the **average total execution time** across all queries for a fair comparison.
-
-We decided **not** to display each individual query time. Instead, we present the **average total time** per algorithm.
-
-### Timing Comparison
-
-| Algorithm                | Run 1 (ms)    | Run 2 (ms)    | Run 3 (ms)    | Run 4 (ms)    | Run 5 (ms)    | **Average (ms)**    |
-| ------------------------ | ------------- | ------------- | ------------- | ------------- | ------------- | ------------------- |
-| Base Solution            | 170014        | 169454        | 169220        | 168890        | 168634        | 169242              |
-| Indexing                 | 13035         | 12969         | 12842         | 13050         | 13190         | 13017               |                
-| Building Parallelization | 12906         | 13085         | 12853         | 12873         | 12877         | 12919               |
-| Probing Parallelization  | 7836          | 7757          | 7841          | 7754          | 7800          | 7798                |
-| Work Stealing            | 6161          | 6316          | 6090          | 6315          | 6160          | 6208                |
-
-### Tuning Parameters
-
-The code supports environment variables for performance tuning:
 ```bash
 SPC_FORCE_THREADS="value" SPC_THREADED_MIN_BUILD="value" ./build/fast plans.json
 ```
-- `SPC_FORCE_THREADS`: Override automatic thread detection (default: system thread count)
-- `SPC_THREADED_MIN_BUILD`: Minimum build size for parallel hash construction (default: 600,000 rows)
 
-After extensive experimentation, the default values (system threads & 600,000 threshold) provide optimal performance across diverse query workloads.
+- `SPC_FORCE_THREADS` overrides the default thread count.
+- `SPC_THREADED_MIN_BUILD` controls when the threaded build path is enabled.
 
----
+## Results
 
-## Team Contributions
+The documented progression is also reflected in the performance numbers. On the benchmark system used for evaluation, the average runtime improved from the baseline to the final version as follows:
 
-| Member             | Contributions                                                                                                                                                                                             |
-| -----------------  | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **D. Andreakis**   |  • Implemented Indexing optimization technique. <br> • Implemented Building Parallelization <br> • Implemented Probing Parallelization <br> • Implemented Work Stealing <br> • Set up continuous integration through GitHub Actions. <br> • Executed performance testing. <br> • Authored the final report.|
-| **Ev. Vasileiou**  | • Co-implemented Unit-Tests. |
-| **A. Kolokouras** | • Co-implemented Unit-Tests. |
+| Stage | Avg Time (ms) |
+| --- | ---: |
+| Base solution | 169242 |
+| Indexing | 13017 |
+| Building parallelization | 12919 |
+| Probing parallelization | 7798 |
+| Work stealing | 6208 |
 
----
+The full stage-by-stage discussion and supporting tables are preserved in the archive README files and the companion documentation site.
 
-## System Specifications
+## How To Run
 
-All performance tests were conducted on the following system:
+Run these commands from the project root.
 
-- **Processor:** 11th Gen Intel(R) Core(TM) i5-11400F @ 2.60GHz  
-- **RAM:** 16 GB (15.9 GB usable)  
-- **System Type:** 64-bit operating system, x64-based processor  
+```bash
+./download_imdb.sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
+cmake --build build -- -j $(nproc)
+./build/build_database imdb.db
+./build/run plans.json
+```
 
-> Note: The code was run in a virtual machine configured to use all available resources of the host system.
+If you prefer `Ninja Multi-Config`, use:
+
+```bash
+cmake -S . -B build -Wno-dev -G "Ninja Multi-Config"
+cmake --build build --config Release -- -j $(nproc)
+./build/Release/build_database imdb.db
+./build/Release/run plans.json
+```
+
+For cache-based execution on UNIX-like systems:
+
+```bash
+./build/build_cache plans.json
+./build/fast plans.json
+```
+
+## Environment
+
+- Code is compiled with Clang 18.
+- Performance tests were run on an 11th Gen Intel Core i5-11400F with 16 GB RAM in a virtual machine using the available host resources.
+
+## Companion Documentation
+
+The project is also documented as a small website:
+
+https://encodedmind.github.io/sigmod25-documentation/
+
+That site follows the same progression as this repository: problem statement, optimization stages, and performance results.
