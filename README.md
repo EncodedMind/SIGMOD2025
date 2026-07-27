@@ -25,10 +25,10 @@ Relevant files:
 
 We implemented the join operator by developing three optimization techniques. In the baseline solution, strings are fully materialized and copied early during query execution, causing unnecessary data movement. Moreover, intermediate join results are currently materialized in a row-store format, preventing us from benefiting from column-store cache locality and performance. Last, the current hash join implementation does not handle skewed or duplicate-heavy data efficiently, limiting performance for selective joins. To address these issues, we implemented the following optimization strategies:
 
-1.1. Late Materialization for strings
-1.2. Eliminating Intermediate Results at the Root Join
-2. Column Store
-3. Unchained Hashing
+1.1. Late Materialization for strings  
+1.2. Eliminating Intermediate Results at the Root Join  
+2. Column Store  
+3. Unchained Hashing  
 
 Relevant files:
 
