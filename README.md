@@ -88,36 +88,92 @@ The full stage-by-stage discussion and supporting tables are preserved in the ar
 
 ## How To Run
 
-Run these commands from the project root.
+### Quick start
+
+> [!TIP]
+> Run all the following commands in the root directory of this project.
+
+First, download the imdb dataset.
 
 ```bash
 ./download_imdb.sh
+```
+
+Second, build the project.
+
+```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
 cmake --build build -- -j $(nproc)
+```
+
+Third, prepare the DuckDB database for correctness checking.
+
+```bash
 ./build/build_database imdb.db
+```
+
+Now, you can run the tests:
+```bash
 ./build/run plans.json
 ```
+> [!TIP]
+> If you want to use `Ninja Multi-Config` as the generator. The commands will look like:
+> 
+>```bash
+> cmake -S . -B build -Wno-dev -G "Ninja Multi-Config"
+> cmake --build build --config Release -- -j $(nproc)
+> ./build/Release/build_database imdb.db
+> ./build/Release/run plans.json
+> ```
 
-If you prefer `Ninja Multi-Config`, use:
+### Cache
 
-```bash
-cmake -S . -B build -Wno-dev -G "Ninja Multi-Config"
-cmake --build build --config Release -- -j $(nproc)
-./build/Release/build_database imdb.db
-./build/Release/run plans.json
-```
+**This section is only for UNIX users** \
+There are 2 new executables with this repository. They cache the join tables and
+result of each query and mmap them for faster loading times and getting rid of duckdb.
 
-For cache-based execution on UNIX-like systems:
-
+To build the cache you need to run:
 ```bash
 ./build/build_cache plans.json
+```
+
+> [!TIP] 
+> If you are using `Linux x86_64` you can download our prebuilt cache with:
+> ```
+> wget http://share.uoa.gr/protected/all-download/sigmod25/sigmod25_cache_x86.tar.gz
+> ```
+> If you are using `macOS arm64` you can download our prebuilt cache with:
+> ```
+> wget http://share.uoa.gr/protected/all-download/sigmod25/sigmod25_cache_arm.tar.gz
+> ```
+> For all other systems you will need to build the cache on your own.
+
+After the cache is built you can run the queries using:
+```bash
 ./build/fast plans.json
 ```
 
+Also after you have built the cache you no longer need to build the `run` executable
+every time (which depends on duckdb and can be slow to compile). Just compile 
+the executable that uses the cache:
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -Wno-dev
+cmake --build build -- -j $(nproc) fast
+```
+
+Code is compiled with Clang 18.
+
+---
+
 ## Environment
 
-- Code is compiled with Clang 18.
-- Performance tests were run on an 11th Gen Intel Core i5-11400F with 16 GB RAM in a virtual machine using the available host resources.
+All performance tests were conducted on the following system:
+
+- **Processor:** 11th Gen Intel(R) Core(TM) i5-11400F @ 2.60GHz  
+- **RAM:** 16 GB (15.9 GB usable)  
+- **System Type:** 64-bit operating system, x64-based processor  
+
+> Note: The code was run in a virtual machine configured to use all available resources of the host system.
 
 ## Companion Documentation
 
